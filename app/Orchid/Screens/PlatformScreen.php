@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Orchid\Screens;
 
+use App\View\Components\Statistic;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
@@ -27,17 +28,7 @@ class PlatformScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Get Started';
-    }
-
-    /**
-     * Display header description.
-     *
-     * @return string|null
-     */
-    public function description(): ?string
-    {
-        return 'Welcome to your Orchid application.';
+        return 'Dashboard';
     }
 
     /**
@@ -47,19 +38,7 @@ class PlatformScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [
-            Link::make('Website')
-                ->href('http://orchid.software')
-                ->icon('globe-alt'),
-
-            Link::make('Documentation')
-                ->href('https://orchid.software/en/docs')
-                ->icon('docs'),
-
-            Link::make('GitHub')
-                ->href('https://github.com/orchidsoftware/platform')
-                ->icon('social-github'),
-        ];
+        return [];
     }
 
     /**
@@ -70,7 +49,10 @@ class PlatformScreen extends Screen
     public function layout(): iterable
     {
         return [
-            Layout::view('platform::partials.welcome'),
+            //Layout::view('platform::partials.welcome'),
+            Layout::columns([
+                Layout::component(Statistic::class)
+            ])
         ];
     }
 }

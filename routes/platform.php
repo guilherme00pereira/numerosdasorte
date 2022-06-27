@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Orchid\Screens\Admin\UploadFile;
+use App\Orchid\Screens\Admin\EditHelp;
 use App\Orchid\Screens\Examples\ExampleCardsScreen;
 use App\Orchid\Screens\Examples\ExampleChartsScreen;
 use App\Orchid\Screens\Examples\ExampleFieldsAdvancedScreen;
@@ -113,3 +115,7 @@ Route::screen('example-cards', ExampleCardsScreen::class)->name('platform.exampl
 Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');
 
 //Route::screen('idea', Idea::class, 'platform.screens.idea');
+
+// ADMIN ROUTES
+Route::screen('upload-file', UploadFile::class)->name('platform.upload_file');
+Route::screen('edit-help-text', EditHelp::class)->name('platform.edit_help_text');
