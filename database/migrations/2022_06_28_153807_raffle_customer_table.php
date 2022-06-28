@@ -13,10 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('information', function (Blueprint $table) {
+        Schema::create('raffle_cursomer', function (Blueprint $table) {
             $table->id();
-            $table->text('info');
-            $table->timestamps();
+            $table->unsignedBigInteger('raffle');
+            $table->unsignedBigInteger('customer');
+            $table->string('numbers', 1024);
+            $table->foreign('raffle')->references('id')->on('raffles');
+            $table->foreign('customer')->references('id')->on('customers');
         });
     }
 
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('information');
+        //
     }
 };

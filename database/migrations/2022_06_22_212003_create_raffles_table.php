@@ -17,8 +17,10 @@ return new class extends Migration
             $table->id();
             $table->date('raffle_date');
             $table->string('prize', 1024);
-            $table->foreign('winner')->references('customer_id')->on('customers');
+            $table->unsignedBigInteger('winner');
+            $table->string('chosen_number', 6);
             $table->timestamps();
+            $table->foreign('winner')->references('id')->on('customers');
         });
     }
 

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Orchid\Screens;
 
-use App\View\Components\Statistic;
-use Orchid\Screen\Actions\Link;
+use App\View\Components\DashboardCustomers;
+use App\View\Components\DashboardDefaulters;
+use App\View\Components\DashboardLotteryNumbers;
+use App\View\Components\DashboardPrize;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
 
@@ -18,7 +20,11 @@ class PlatformScreen extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        return [
+            "lottery" => [
+                "title"  => "TOTAL DE NÚMEROS DA"
+            ]
+        ];
     }
 
     /**
@@ -51,7 +57,12 @@ class PlatformScreen extends Screen
         return [
             //Layout::view('platform::partials.welcome'),
             Layout::columns([
-                Layout::component(Statistic::class)
+                Layout::component(DashboardLotteryNumbers::class),
+                Layout::component(DashboardPrize::class),
+            ]),
+            Layout::columns([
+                Layout::component(DashboardCustomers::class),
+                Layout::component(DashboardDefaulters::class),
             ])
         ];
     }

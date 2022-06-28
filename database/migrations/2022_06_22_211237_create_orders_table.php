@@ -15,10 +15,12 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('number', 32);
-            $table->tinyInteger('installments');
+            $table->string('order_id', 32);
+            $table->float('value');
+            $table->string('installments', 2);
+            $table->string('payment_type', 64);
             $table->foreignId('customer_id')->constrained();
-            $table->timestamps('created_at');
+            $table->timestamps();
         });
     }
 

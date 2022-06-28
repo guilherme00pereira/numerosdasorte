@@ -9,6 +9,8 @@ use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Screen;
 use Orchid\Support\Color;
 use Orchid\Support\Facades\Layout;
+use Illuminate\Http\Request;
+use Orchid\Support\Facades\Alert;
 
 class UploadFile extends Screen
 {
@@ -62,8 +64,9 @@ class UploadFile extends Screen
         return [
             Layout::rows([
                 Group::make([
-                    Input::make('raw_file')
+                    Input::make('import_orders')
                         ->type('file')
+                        ->acceptedFiles('application/json')
                         ->title('Importar pedidos')
                         ->vertical(),
                     Button::make('Primary')->method('handleOrdersFileUpload')->type(Color::PRIMARY()),
@@ -71,7 +74,7 @@ class UploadFile extends Screen
             ]),
             Layout::rows([
                 Group::make([
-                    Input::make('raw_file')
+                    Input::make('import_statuses')
                         ->type('file')
                         ->title('Importar status dos cliente')
                         ->vertical(),
@@ -84,13 +87,21 @@ class UploadFile extends Screen
         ];
     }
 
-    public function handleOrdersFileUpload(): void
+    public function handleOrdersFileUpload( Request $request ): void
     {
+        $uploaded = $request->file("import_orders");
+        if( $uploaded->extension() != 'json') {
+            Alert::error("Tipo de arquivo inválido! O arquivo precisa estar no formato .json");
+        } else {
+            $savedFile = $request->file("import_orders")->store('imported');
+        }
+               
 
     }
 
-    public function handleCustomerStatusFileUpload(): void
+    public function handleCustomerStatusFileUpload( Request $request ): void
     {
-
+        $uploaded = $request->file("import_statuses");
+        
     }
 }
