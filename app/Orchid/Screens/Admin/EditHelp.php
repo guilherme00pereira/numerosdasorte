@@ -62,6 +62,6 @@ class EditHelp extends Screen
 
     public function saveHelpText(): void
     {
-
+        
     }
 }

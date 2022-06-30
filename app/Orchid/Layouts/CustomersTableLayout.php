@@ -26,7 +26,10 @@ class CustomersTableLayout extends Table
     {
         return [
             TD::make('name')->sort(),
-            TD::make('id')
+            TD::make('phone'),
+            TD::make('cpf'),
+            TD::make('city'),
+            TD::make('created_at')->sort()
         ];
     }
 }
