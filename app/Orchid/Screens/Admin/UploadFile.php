@@ -2,10 +2,12 @@
 
 namespace App\Orchid\Screens\Admin;
 
+use App\Services\ImportCustomers;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
+use Orchid\Screen\Fields\Upload;
 use Orchid\Screen\Screen;
 use Orchid\Support\Color;
 use Orchid\Support\Facades\Layout;
@@ -62,46 +64,63 @@ class UploadFile extends Screen
     public function layout(): iterable
     {
         return [
-            Layout::rows([
-                Group::make([
-                    Input::make('import_orders')
-                        ->type('file')
-                        ->acceptedFiles('application/json')
-                        ->title('Importar pedidos')
-                        ->vertical(),
-                    Button::make('Primary')->method('handleOrdersFileUpload')->type(Color::PRIMARY()),
+                Layout::rows([
+                    Group::make([
+                        Input::make('import_orders')
+                            ->type('file')
+                            ->title('Importar Pedidos')
+                            ->vertical(),
+                        Button::make('Importar')->method('handleOrdersFileUpload')->type(Color::PRIMARY()),
+                    ])
+                ]),
+                Layout::rows([
+                    Group::make([
+                        Input::make('import_customers')
+                            ->type('file')
+                            ->title('Importar Cliente')
+                            ->vertical(),
+                        Button::make('Importar')->method('handleCustomerFileUpload')->type(Color::PRIMARY()),
+                    ])
                 ])
-            ]),
-            Layout::rows([
-                Group::make([
-                    Input::make('import_statuses')
-                        ->type('file')
-                        ->title('Importar status dos cliente')
-                        ->vertical(),
-                    Button::make('Primary')
-                        ->method('handleCustomerStatusFileUpload')
-                        ->type(Color::PRIMARY())
-                        ->horizontal(),
-                ])
-            ])
         ];
     }
 
-    public function handleOrdersFileUpload( Request $request ): void
+    public function handleOrdersFileUpload(Request $request): void
     {
         $uploaded = $request->file("import_orders");
-        if( $uploaded->extension() != 'json') {
-            Alert::error("Tipo de arquivo inválido! O arquivo precisa estar no formato .json");
-        } else {
+        if ($this->verifyUploadedFile($uploaded)) {
             $savedFile = $request->file("import_orders")->store('imported');
+        } else {
+            return;
         }
-               
-
     }
 
-    public function handleCustomerStatusFileUpload( Request $request ): void
+    public function handleCustomerFileUpload(Request $request): void
     {
-        $uploaded = $request->file("import_statuses");
-        
+        $uploaded = $request->file("import_customers");
+        if ($this->verifyUploadedFile($uploaded)) {
+            try {
+                $savedFile = $request->file("import_customers")->store('imported');
+                ImportCustomers::process($savedFile);
+                Alert::success("Arquivo processado");
+            } catch (\Exception $e) {
+                Alert::error("Erro ao processar o arquivo: " . $e->getMessage());
+            }
+        } else {
+            return;
+        }
+    }
+
+    private function verifyUploadedFile($uploaded): bool
+    {
+        if (is_null($uploaded)) {
+            Alert::error("Nenhum arquivo selecionado");
+            return false;
+        }
+        if ($uploaded->extension() != 'json') {
+            Alert::error("Tipo de arquivo inválido! O arquivo precisa estar no formato .json");
+            return false;
+        }
+        return true;
     }
 }

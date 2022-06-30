@@ -15,7 +15,7 @@ class CustomersTableLayout extends Table
      *
      * @var string
      */
-    protected $target = '';
+    protected $target = 'customers';
 
     /**
      * Get the table cells to be displayed.
@@ -24,6 +24,9 @@ class CustomersTableLayout extends Table
      */
     protected function columns(): iterable
     {
-        return [];
+        return [
+            TD::make('name')->sort(),
+            TD::make('id')
+        ];
     }
 }
