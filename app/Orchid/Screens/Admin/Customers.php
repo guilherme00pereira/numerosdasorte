@@ -4,6 +4,9 @@ namespace App\Orchid\Screens\Admin;
 
 use App\Models\Customer;
 use App\Orchid\Layouts\CustomersTableLayout;
+use App\View\Components\CustomersSearchBar;
+use Orchid\Screen\Fields\Input;
+use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Screen;
 
 class Customers extends Screen
@@ -48,6 +51,11 @@ class Customers extends Screen
     public function layout(): iterable
     {
         return [
+            Layout::wrapper('customers-search-bar', [
+                'status'    => Layout::rows([
+                    Input::make('status')->title('Status do cliente')
+                ])
+            ]),
             CustomersTableLayout::class
         ];
     }

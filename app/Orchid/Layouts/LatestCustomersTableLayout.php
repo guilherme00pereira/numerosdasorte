@@ -15,7 +15,7 @@ class LatestCustomersTableLayout extends Table
      *
      * @var string
      */
-    protected $target = 'customers';
+    protected $target = 'latestCustomers';
 
     /**
      * Get the table cells to be displayed.
@@ -25,11 +25,11 @@ class LatestCustomersTableLayout extends Table
     protected function columns(): iterable
     {
         return [
-            TD::make('name')->sort(),
+            TD::make('name'),
             TD::make('phone'),
             TD::make('cpf'),
             TD::make('city'),
-            TD::make('created_at')->sort()
+            TD::make('created_at')
         ];
     }
 }

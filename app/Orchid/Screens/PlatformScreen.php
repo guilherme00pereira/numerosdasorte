@@ -24,7 +24,7 @@ class PlatformScreen extends Screen
     public function query(): iterable
     {
         return [
-            'customers' => Customer::query()->latest()->take(5)
+            'latestCustomers' => Customer::query()->latest()->take(5)
         ];
     }
 
