@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Orchid\Screens\Admin\Customers;
 use App\Orchid\Screens\Admin\UploadFile;
 use App\Orchid\Screens\Admin\EditHelp;
+use App\Orchid\Screens\Admin\Winners;
 use App\Orchid\Screens\Examples\ExampleCardsScreen;
 use App\Orchid\Screens\Examples\ExampleChartsScreen;
 use App\Orchid\Screens\Examples\ExampleFieldsAdvancedScreen;
@@ -12,6 +14,7 @@ use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
 use App\Orchid\Screens\Examples\ExampleScreen;
 use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
 use App\Orchid\Screens\PlatformScreen;
+use App\Orchid\Screens\Admin\Raffles;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
@@ -117,5 +120,8 @@ Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('pla
 //Route::screen('idea', Idea::class, 'platform.screens.idea');
 
 // ADMIN ROUTES
-Route::screen('upload-file', UploadFile::class)->name('platform.upload_file');
-Route::screen('edit-help-text', EditHelp::class)->name('platform.edit_help_text');
+Route::screen('clientes', Customers::class)->name('platform.customers');
+Route::screen('sorteios-e-premios', Raffles::class)->name('platform.raffles');
+Route::screen('ganhadores', Winners::class)->name('platform.winners');
+Route::screen('importar-dados', UploadFile::class)->name('platform.upload_file');
+Route::screen('editar-pagina-ajuda', EditHelp::class)->name('platform.edit_help_text');

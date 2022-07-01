@@ -18,7 +18,7 @@ class PlatformProvider extends OrchidServiceProvider
     public function boot(Dashboard $dashboard): void
     {
         parent::boot($dashboard);
-        $dashboard->registerResource('stylesheets', 'app.css');
+        $dashboard->registerResource('stylesheets', '/css/app.css');
     }
 
     /**
@@ -30,6 +30,15 @@ class PlatformProvider extends OrchidServiceProvider
             Menu::make("Dashboard")
                 ->icon("grid")
                 ->route("platform.main"),
+            Menu::make("Clientes")
+                ->icon("people")
+                ->route("platform.customers"),
+            Menu::make("Sorteios e Prêmios")
+                ->icon("calendar")
+                ->route("platform.raffles"),
+            Menu::make("Ganhadores")
+                ->icon("badge")
+                ->route("platform.winners"),
             Menu::make("Editar Página Ajuda")
                 ->icon("question")
                 ->route("platform.edit_help_text"),

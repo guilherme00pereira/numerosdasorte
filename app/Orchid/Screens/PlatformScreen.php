@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Orchid\Screens;
 
 use App\Models\Customer;
-use App\Orchid\Layouts\CustomersTableLayout;
+use App\Orchid\Layouts\LatestCustomersTableLayout;
 use App\View\Components\DashboardCustomers;
 use App\View\Components\DashboardDefaulters;
 use App\View\Components\DashboardLotteryNumbers;
 use App\View\Components\DashboardPrize;
-use Orchid\Screen\Layouts\Table;
+use Orchid\Screen\Action;
 use Orchid\Screen\Screen;
-use Orchid\Screen\TD;
 use Orchid\Support\Facades\Layout;
 
 class PlatformScreen extends Screen
@@ -25,7 +24,7 @@ class PlatformScreen extends Screen
     public function query(): iterable
     {
         return [
-            'customers' => Customer::all()->take(5)
+            'customers' => Customer::query()->latest()->take(5)
         ];
     }
 
@@ -42,7 +41,7 @@ class PlatformScreen extends Screen
     /**
      * Button commands.
      *
-     * @return \Orchid\Screen\Action[]
+     * @return Action[]
      */
     public function commandBar(): iterable
     {
@@ -57,7 +56,6 @@ class PlatformScreen extends Screen
     public function layout(): iterable
     {
         return [
-            //Layout::view('platform::partials.welcome'),
             Layout::columns([
                 Layout::component(DashboardLotteryNumbers::class),
                 Layout::component(DashboardPrize::class),
@@ -66,7 +64,7 @@ class PlatformScreen extends Screen
                 Layout::component(DashboardCustomers::class),
                 Layout::component(DashboardDefaulters::class),
             ]),
-            CustomersTableLayout::class
+            //LatestCustomersTableLayout::class
         ];
     }
 }

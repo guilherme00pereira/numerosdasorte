@@ -2,12 +2,14 @@
 
 namespace App\Orchid\Screens\Admin;
 
+use App\Models\Blog;
+use Illuminate\Http\Request;
+use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
-use Orchid\Screen\Fields\Code;
-use Orchid\Screen\Fields\Quill;
 use Orchid\Screen\Fields\SimpleMDE;
 use Orchid\Screen\Screen;
 use Orchid\Support\Color;
+use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
 
 class EditHelp extends Screen
@@ -19,7 +21,9 @@ class EditHelp extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        return [
+            'raffle_rules' => Blog::where('tag', 'raffle_rule')->first()
+        ];
     }
 
     /**
@@ -35,7 +39,7 @@ class EditHelp extends Screen
     /**
      * Button commands.
      *
-     * @return \Orchid\Screen\Action[]
+     * @return Action[]
      */
     public function commandBar(): iterable
     {
@@ -45,23 +49,31 @@ class EditHelp extends Screen
     /**
      * Views.
      *
-     * @return \Orchid\Screen\Layout[]|string[]
+     * @return iterable
      */
     public function layout(): iterable
     {
         return [
             Layout::rows([
-                SimpleMDE::make('simplemde')
-                    ->title('SimpleMDE')
-                    ->popover('SimpleMDE is a simple, embeddable, and beautiful JS markdown editor'),
-
+                SimpleMDE::make('raffle_rules.content')
+                    ->title('Texto'),
                 Button::make('Salvar')->method('saveHelpText')->type(Color::PRIMARY()),
             ])
         ];
     }
 
-    public function saveHelpText(): void
+    public function saveHelpText( Request $request ): void
     {
-        
+        try {
+            $rule = $request->get('raffle_rules');
+            Blog::firstOrCreate(
+                ['tag' => 'raffle_rule'],
+                ['content' => $rule['content'], 'title' => '']
+            );
+            Alert::success("Texto salvo com sucesso");
+        } catch (\Exception $e) {
+            Alert::error("Erro ao salvar texto." . $e->getMessage());
+        }
+
     }
 }
