@@ -20,6 +20,12 @@ class RedirectIfAuthenticated
     public function handle(Request $request, Closure $next, ...$guards)
     {
         $guards = empty($guards) ? [null] : $guards;
+        
+        
+        
+        /* if($role === 'cliente') {
+            return route('platform.customers.dashboard');
+        } */
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {

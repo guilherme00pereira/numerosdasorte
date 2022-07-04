@@ -51,10 +51,24 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon("server")
                 ->route("platform.upload_file")
                 ->permission('manager.painel'),
+            Menu::make("Profile")
+                ->icon("user")
+                ->route("platform.profile")
+                ->permission('manager.painel'),
+
             // CUSTOMERS
             Menu::make("Dashboard")
                 ->icon("grid")
-                ->route("platform.customers.dashboard")->permission('customer.painel'),
+                ->route("platform.customers.dashboard")
+                ->permission('customer.painel'),
+            Menu::make("Ajuda")
+                ->icon("question")
+                ->route("platform.customers.help")
+                ->permission('customer.painel'),
+            Menu::make("Profile")
+                ->icon("user")
+                ->route("platform.customers.edit-profile")
+                ->permission('customer.painel'),
         ];
     }
 
@@ -76,7 +90,7 @@ class PlatformProvider extends OrchidServiceProvider
         return [
             ItemPermission::group(__('System'))
                 ->addPermission('platform.systems.roles', __('Roles'))
-                ->addPermission('platform.systems.users', __('Users')),
+                ->addPermission('platform.systems.users', __('Users'))
         ];
     }
 }

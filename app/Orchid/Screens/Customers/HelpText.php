@@ -2,9 +2,11 @@
 
 namespace App\Orchid\Screens\Customers;
 
+use App\Models\Blog;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Layout;
 
-class CustomerDashboard extends Screen
+class HelpText extends Screen
 {
     /**
      * Query data.
@@ -13,7 +15,9 @@ class CustomerDashboard extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        return [
+            'raffle_rules' => Blog::where('tag', 'raffle_rule')->first()
+        ];
     }
 
     /**
@@ -23,7 +27,7 @@ class CustomerDashboard extends Screen
      */
     public function name(): ?string
     {
-        return 'Painel do Cliente';
+        return 'Ajuda e Regulamento dos Sorteios';
     }
 
     /**
@@ -43,6 +47,8 @@ class CustomerDashboard extends Screen
      */
     public function layout(): iterable
     {
-        return [];
+        return [
+            Layout::view('customers.help')
+        ];
     }
 }

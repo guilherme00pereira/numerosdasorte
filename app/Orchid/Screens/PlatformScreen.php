@@ -82,4 +82,11 @@ class PlatformScreen extends Screen
             LatestCustomersTableLayout::class
         ];
     }
+
+    public function permission(): ?iterable
+    {
+        return [
+            'manager.painel'
+        ];
+    }
 }

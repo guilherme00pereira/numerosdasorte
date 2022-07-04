@@ -6,6 +6,7 @@ use App\Orchid\Screens\Admin\CustomerEdit;
 use App\Orchid\Screens\Admin\Customers;
 use App\Orchid\Screens\Admin\UploadFile;
 use App\Orchid\Screens\Admin\EditHelp;
+use App\Orchid\Screens\Admin\RaffleEdit;
 use App\Orchid\Screens\Admin\Winners;
 use App\Orchid\Screens\Customers\CustomerDashboard;
 use App\Orchid\Screens\Examples\ExampleCardsScreen;
@@ -17,6 +18,8 @@ use App\Orchid\Screens\Examples\ExampleScreen;
 use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
 use App\Orchid\Screens\PlatformScreen;
 use App\Orchid\Screens\Admin\Raffles;
+use App\Orchid\Screens\Customers\HelpText;
+use App\Orchid\Screens\Customers\ProfileEdit;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
@@ -125,6 +128,7 @@ Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('pla
 Route::screen('clientes', Customers::class)->name('platform.customers');
 Route::screen('editar-perfil-cliente/{id}', CustomerEdit::class)->name('platform.customers.edit');
 Route::screen('sorteios-e-premios', Raffles::class)->name('platform.raffles');
+Route::screen('editar-sorteio/{id}', RaffleEdit::class)->name('platform.raffle.edit');
 Route::screen('ganhadores', Winners::class)->name('platform.winners');
 Route::screen('importar-dados', UploadFile::class)->name('platform.upload_file');
 Route::screen('editar-pagina-ajuda', EditHelp::class)->name('platform.edit_help_text');
@@ -133,5 +137,7 @@ Route::screen('editar-pagina-ajuda', EditHelp::class)->name('platform.edit_help_
 // CUSTOMERS ROUTES
 Route::middleware(['access:customer.painel'])->group(function(){
     Route::screen('painel-cliente', CustomerDashboard::class)->name('platform.customers.dashboard');
+    Route::screen('editar-perfil', ProfileEdit::class)->name('platform.customers.edit-profile');
+    Route::screen('ajuda', HelpText::class)->name('platform.customers.help');
 });
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Orchid\Screens\Customers;
+namespace App\Orchid\Screens\Admin;
 
 use Orchid\Screen\Screen;
 
-class CustomerDashboard extends Screen
+class RaffleEdit extends Screen
 {
     /**
      * Query data.
@@ -23,7 +23,7 @@ class CustomerDashboard extends Screen
      */
     public function name(): ?string
     {
-        return 'Painel do Cliente';
+        return 'Editar Sorteio';
     }
 
     /**

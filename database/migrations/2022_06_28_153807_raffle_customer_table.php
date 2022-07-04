@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('raffle_cursomer', function (Blueprint $table) {
+        Schema::create('raffle_customer', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('raffle');
             $table->unsignedBigInteger('customer');
