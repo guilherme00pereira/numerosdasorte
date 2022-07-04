@@ -66,7 +66,7 @@ class EditHelp extends Screen
     {
         try {
             $rule = $request->get('raffle_rules');
-            Blog::firstOrCreate(
+            Blog::updateOrCreate(
                 ['tag' => 'raffle_rule'],
                 ['content' => $rule['content'], 'title' => '']
             );

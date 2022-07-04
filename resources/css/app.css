@@ -1,3 +1,31 @@
+.authwrapper {
+    background-color: #405189 !important;
+    width: 600px;
+    color: white;
+}
+
+.authwrapper h5, .form-check>span, .auth-another-user {
+    color: white !important;
+}
+
+.authbrand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.authbrand small {
+    font-size: 0.75rem;
+}
+
+.authbrand div {
+    margin-top: 1rem;
+}
+
+.authbrand h4 {
+    margin-bottom: 0;
+}
 
 .aside {
     background-color: #405189 !important;
@@ -9,4 +37,24 @@
 
 .nav>li>a:hover {
     background-color: #0083c9 !important;
+}
+
+.status-defaulter {
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    display: inline-block
+}
+
+.defaulter-yes {
+    background-color: #F92C02;
+}
+
+.defaulter-no {
+    background-color: #3AD55E;
+}
+
+.aside-logo {
+    margin-left: -1rem;
+    border-bottom: 1px solid #e3e4e6;
 }

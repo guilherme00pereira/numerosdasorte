@@ -2,6 +2,7 @@
 
 namespace App\Orchid\Layouts;
 
+use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 
@@ -25,11 +26,23 @@ class CustomersTableLayout extends Table
     protected function columns(): iterable
     {
         return [
-            TD::make('name')->sort(),
-            TD::make('phone'),
-            TD::make('cpf'),
-            TD::make('city'),
-            TD::make('created_at')->sort()
+            TD::make('name', 'Nome Completo')->sort(),
+            TD::make('phone', 'Telefone'),
+            TD::make('cpf', 'CPF'),
+            TD::make('city', 'Cidade'),
+            TD::make('created_at', 'Data de Cadastro')->sort()->render(function ($customer){
+                return e(date_format($customer->created_at, 'd/m/Y'));
+            }),
+            TD::make('defaulter', '')->render(function ($customer){
+                return $customer->defaulter ?
+                    "<span class='status-defaulter defaulter-yes'></span>" :
+                    "<span class='status-defaulter defaulter-no'></span>";
+            }),
+            TD::make('id', '')->render(function ($customer){
+               return Link::make('')
+                   ->route('platform.customers.edit', ['id' => $customer->id])
+                   ->icon('note');
+            })
         ];
     }
 }

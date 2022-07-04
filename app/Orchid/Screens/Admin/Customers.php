@@ -2,12 +2,16 @@
 
 namespace App\Orchid\Screens\Admin;
 
+use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Orchid\Layouts\CustomersTableLayout;
-use App\View\Components\CustomersSearchBar;
+use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
+use Orchid\Screen\Fields\Select;
 use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Screen;
+use Orchid\Support\Color;
 
 class Customers extends Screen
 {
@@ -52,11 +56,41 @@ class Customers extends Screen
     {
         return [
             Layout::wrapper('customers-search-bar', [
-                'status'    => Layout::rows([
-                    Input::make('status')->title('Status do cliente')
+                'searchFields'        => Layout::rows([
+                    Group::make([
+                        Select::make('defaulter')->options([
+                            'todos'         => 'Todos',
+                            'adimplente'    => 'Adimplente',
+                            'inadimplente'  => 'Inadimplente'
+                        ])->title('Status do cliente'),
+                        Input::make('name')->title('Busca por nome'),
+                        Input::make('cpf')->title('Busca por CPF'),
+                        Button::make('Buscar')->method('filterCustomers')->type(Color::PRIMARY())
+                    ])
                 ])
             ]),
             CustomersTableLayout::class
         ];
+    }
+
+    public function filterCustomers( Request $request )
+    {
+        $queryParams = "";
+        if($request['defaulter']) {
+            if('todos' !== $request['defaulter']) {
+                $queryParams .= "[defaulter]=" . ($request['defaulter'] === 'adimplente' ? 0 : 1);
+            }
+        }
+        if($request['name']) {
+            $queryParams .= "[name]=" . $request['name'];
+        }
+        if($request['cpf']) {
+            $queryParams .= "[cpf]=" . $request['cpf'];
+        }
+        if(empty($queryParams)) {
+               return redirect()->to('/admin/clientes');
+        } else {
+            return redirect()->to('/admin/clientes?filter' . $queryParams);
+        }
     }
 }

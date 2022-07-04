@@ -6,10 +6,6 @@ namespace App\Orchid\Screens;
 
 use App\Models\Customer;
 use App\Orchid\Layouts\LatestCustomersTableLayout;
-use App\View\Components\DashboardCustomers;
-use App\View\Components\DashboardDefaulters;
-use App\View\Components\DashboardLotteryNumbers;
-use App\View\Components\DashboardPrize;
 use Orchid\Screen\Action;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
@@ -24,7 +20,33 @@ class PlatformScreen extends Screen
     public function query(): iterable
     {
         return [
-            'latestCustomers' => Customer::query()->latest()->take(5)
+            'latestCustomers'   => Customer::all()->take(5),
+            'stats'             => [
+                [
+                    'image'     => 'lottery.png',
+                    'pretitle'  => 'TOTAL DE NÚMEROS DA SORTE',
+                    'title'     => 'SORTE ' . '1456',
+                    'subtitle'  => 'Total geral de todos os números da sorte para os cliente cadastrados'
+                ],
+                [
+                    'image'     => 'badge.png',
+                    'pretitle'  => 'VEJA O TOTAL DE',
+                    'title'     => 'PRÊMIOS ' . '456',
+                    'subtitle'  => 'Total de prêmios já distribuídos para a base de clientes cadastrada'
+                ],
+                [
+                    'image'     => 'customer-feedback.png',
+                    'pretitle'  => 'TOTAL GERAL DE',
+                    'title'     => 'CLIENTES ' . '4789',
+                    'subtitle'  => 'Número total de clientes cadastrados na base do sistema'
+                ],
+                [
+                    'image'     => 'defaulter.png',
+                    'pretitle'  => 'TOTAL DE CLIENTE',
+                    'title'     => 'INADIMPLENTE ' . '789',
+                    'subtitle'  => 'Número total de clientes na base do sistema com o status inadimplente'
+                ],
+            ]
         ];
     }
 
@@ -56,15 +78,8 @@ class PlatformScreen extends Screen
     public function layout(): iterable
     {
         return [
-            Layout::columns([
-                Layout::component(DashboardLotteryNumbers::class),
-                Layout::component(DashboardPrize::class),
-            ]),
-            Layout::columns([
-                Layout::component(DashboardCustomers::class),
-                Layout::component(DashboardDefaulters::class),
-            ]),
-            //LatestCustomersTableLayout::class
+            Layout::view('dashboard-stats'),
+            LatestCustomersTableLayout::class
         ];
     }
 }

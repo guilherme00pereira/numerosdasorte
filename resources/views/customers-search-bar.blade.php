@@ -1,3 +1,5 @@
-<div class="flex flex-row p-4 bg-white rounded shadow-sm h-100">
-    {!! $status !!}
+<div class="flex flex-row px-4 bg-white rounded h-100 mb-4">
+    <div>
+        {!! $searchFields !!}
+    </div>
 </div>

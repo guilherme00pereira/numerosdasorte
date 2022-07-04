@@ -25,11 +25,13 @@ class LatestCustomersTableLayout extends Table
     protected function columns(): iterable
     {
         return [
-            TD::make('name'),
-            TD::make('phone'),
-            TD::make('cpf'),
-            TD::make('city'),
-            TD::make('created_at')
+            TD::make('name', 'Nome Completo'),
+            TD::make('phone', 'Telefone'),
+            TD::make('cpf', 'CPF'),
+            TD::make('city', 'Cidade'),
+            TD::make('created_at', 'Data de Cadastro')->render(function ($customer){
+                return e(date_format($customer->created_at, 'd/m/Y'));
+            }),
         ];
     }
 }

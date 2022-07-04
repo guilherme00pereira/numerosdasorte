@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Orchid;
 
+use Illuminate\Support\Facades\Auth;
 use Orchid\Platform\Dashboard;
 use Orchid\Platform\ItemPermission;
 use Orchid\Platform\OrchidServiceProvider;
 use Orchid\Screen\Actions\Menu;
-use Orchid\Support\Color;
 
 class PlatformProvider extends OrchidServiceProvider
 {
@@ -29,22 +29,32 @@ class PlatformProvider extends OrchidServiceProvider
         return [
             Menu::make("Dashboard")
                 ->icon("grid")
-                ->route("platform.main"),
+                ->route("platform.main")
+                ->permission('manager.painel'),
             Menu::make("Clientes")
                 ->icon("people")
-                ->route("platform.customers"),
+                ->route("platform.customers")
+                ->permission('manager.painel'),
             Menu::make("Sorteios e Prêmios")
                 ->icon("calendar")
-                ->route("platform.raffles"),
+                ->route("platform.raffles")
+                ->permission('manager.painel'),
             Menu::make("Ganhadores")
                 ->icon("badge")
-                ->route("platform.winners"),
+                ->route("platform.winners")
+                ->permission('manager.painel'),
             Menu::make("Editar Página Ajuda")
                 ->icon("question")
-                ->route("platform.edit_help_text"),
+                ->route("platform.edit_help_text")
+                ->permission('manager.painel'),
             Menu::make("Importar Dados")
                 ->icon("server")
-                ->route("platform.upload_file"),
+                ->route("platform.upload_file")
+                ->permission('manager.painel'),
+            // CUSTOMERS
+            Menu::make("Dashboard")
+                ->icon("grid")
+                ->route("platform.customers.dashboard")->permission('customer.painel'),
         ];
     }
 
@@ -54,9 +64,7 @@ class PlatformProvider extends OrchidServiceProvider
     public function registerProfileMenu(): array
     {
         return [
-            Menu::make('Profile')
-                ->route('platform.profile')
-                ->icon('user'),
+
         ];
     }
 

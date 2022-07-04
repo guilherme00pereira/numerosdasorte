@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
+use App\Orchid\Screens\Customers\CustomerDashboard;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +16,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('auth');
+    return view('auth-customer');
 });
+
+
+// CUSTOMERS ROUTES
+Route::get('customers-dashboard', [CustomerController::class, 'index']);
+
