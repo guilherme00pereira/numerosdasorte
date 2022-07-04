@@ -2,7 +2,9 @@
 
 namespace App\Orchid\Screens\Customers;
 
+use Orchid\Screen\Action;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Layout;
 
 class CustomerDashboard extends Screen
 {
@@ -13,7 +15,22 @@ class CustomerDashboard extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        return [
+            'stats'             => [
+                [
+                    'image'     => 'lottery.png',
+                    'pretitle'  => 'TOTAL DE NÚMEROS DA SORTE',
+                    'title'     => 'SORTE ' . '81',
+                    'subtitle'  => 'Mantenha suas parcelas em dia, para que seus números sejam válidos para o sorteio'
+                ],
+                [
+                    'image'     => 'badge.png',
+                    'pretitle'  => 'VEJA O TOTAL DE',
+                    'title'     => 'PRÊMIOS ' . '752',
+                    'subtitle'  => 'A BR Vita sempre sorteando prêmios para todos os seus clientes'
+                ]
+            ]
+        ];
     }
 
     /**
@@ -29,7 +46,7 @@ class CustomerDashboard extends Screen
     /**
      * Button commands.
      *
-     * @return \Orchid\Screen\Action[]
+     * @return Action[]
      */
     public function commandBar(): iterable
     {
@@ -39,10 +56,12 @@ class CustomerDashboard extends Screen
     /**
      * Views.
      *
-     * @return \Orchid\Screen\Layout[]|string[]
+     * @return iterable
      */
     public function layout(): iterable
     {
-        return [];
+        return [
+            Layout::view('dashboard-stats'),
+        ];
     }
 }

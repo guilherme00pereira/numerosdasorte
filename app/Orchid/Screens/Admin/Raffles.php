@@ -3,8 +3,15 @@
 namespace App\Orchid\Screens\Admin;
 
 use Orchid\Screen\Action;
-use Orchid\Screen\Layout;
+use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Fields\DateTimer;
+use Orchid\Screen\Fields\Group;
+use Orchid\Screen\Fields\Input;
+use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Screen;
+use Orchid\Support\Color;
+use Orchid\Support\Facades\Layout;
 
 class Raffles extends Screen
 {
@@ -35,7 +42,9 @@ class Raffles extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            Link::make("Adicionar Novo")->route("platform.raffle.edit")->type(Color::SUCCESS())
+        ];
     }
 
     /**
@@ -45,6 +54,20 @@ class Raffles extends Screen
      */
     public function layout(): iterable
     {
-        return [];
+        return [
+            Layout::wrapper('filters.raffles-bar', [
+                'searchFields'        => Layout::rows([
+                    Group::make([
+                        DateTimer::make('year')->title('')->format('Y'),
+                        Button::make('Buscar')->method('filterRaffles')->type(Color::PRIMARY())
+                    ])
+                ])
+            ]),
+        ];
+    }
+
+    public function filterRaffles()
+    {
+
     }
 }

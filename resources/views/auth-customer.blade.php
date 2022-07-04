@@ -8,7 +8,9 @@
         <div class="authbrand">
             @includeFirst([config('platform.template.header'), 'platform::header'])
             <div>
-                <a href="{{ route('platform.main') }}" style="color: white;">ADMIN</a>
+                <span>ÁREA DO CLIENTE</span>
+                <h4>NÚMERO DA SORTE</h4>
+                <small>Acesse e confira todos seus números</small>
             </div>
         </div>
         <div class="row justify-content-center">
@@ -18,6 +20,10 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div>
+        <a href="{{ route('platform.main') }}" style="color: white;">ADMIN</a>
     </div>
 
     <div class="mt-4 text-center">

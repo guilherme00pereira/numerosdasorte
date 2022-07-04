@@ -128,7 +128,7 @@ Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('pla
 Route::screen('clientes', Customers::class)->name('platform.customers');
 Route::screen('editar-perfil-cliente/{id}', CustomerEdit::class)->name('platform.customers.edit');
 Route::screen('sorteios-e-premios', Raffles::class)->name('platform.raffles');
-Route::screen('editar-sorteio/{id}', RaffleEdit::class)->name('platform.raffle.edit');
+Route::screen('editar-sorteio/{id?}', RaffleEdit::class)->name('platform.raffle.edit');
 Route::screen('ganhadores', Winners::class)->name('platform.winners');
 Route::screen('importar-dados', UploadFile::class)->name('platform.upload_file');
 Route::screen('editar-pagina-ajuda', EditHelp::class)->name('platform.edit_help_text');

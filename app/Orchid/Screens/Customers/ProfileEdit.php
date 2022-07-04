@@ -2,13 +2,15 @@
 
 namespace App\Orchid\Screens\Customers;
 
+use App\Models\Customer;
 use Illuminate\Support\Facades\Auth;
-use Orchid\Screen\Action;
+use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Screen;
 use Orchid\Support\Color;
+use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
 
 class ProfileEdit extends Screen
@@ -20,8 +22,10 @@ class ProfileEdit extends Screen
      */
     public function query(): iterable
     {
+        $user           = Auth::user();
+        $profile        = Customer::where('user', $user->id)->first();
         return [
-            'user' => Auth::user()
+            'user' => $profile
         ];
     }
 
@@ -54,6 +58,7 @@ class ProfileEdit extends Screen
     {
         return [
             Layout::rows([
+                Input::make('user.id')->type('hidden'),
                 Group::make([
                     Input::make('user.name')
                         ->title('Nome Completo')
@@ -91,9 +96,23 @@ class ProfileEdit extends Screen
         ];
     }
 
-    public function saveProfile()
+    public function saveProfile( Request $request )
     {
-
+        //var_dump($this->user);die;
+        try {
+            $user = $request['user'];
+            $profile = Customer::find($user['id']);
+            $profile->name = $user['name'];
+            $profile->cpf = $user['cpf'];
+            $profile->birthdate = $user['birthdate'];
+            $profile->phone = $user['phone'];
+            $profile->city = $user['city'];
+            $profile->state = $user['state'];
+            $profile->save();
+            Alert::success("Dados do perfil salvos com sucesso");
+        } catch (\Exception $e) {
+            Alert::error("Erro ao salvar");
+        }
     }
 
 

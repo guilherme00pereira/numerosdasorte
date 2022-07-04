@@ -55,7 +55,7 @@ class Customers extends Screen
     public function layout(): iterable
     {
         return [
-            Layout::wrapper('customers-search-bar', [
+            Layout::wrapper('filters.customers-bar', [
                 'searchFields'        => Layout::rows([
                     Group::make([
                         Select::make('defaulter')->options([
