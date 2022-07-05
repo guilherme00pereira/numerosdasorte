@@ -11,7 +11,7 @@ class Customer extends Model
 {
     use AsSource, Filterable, HasFactory;
 
-    protected $fillable         = ['external_code','cpf','name','email','birthdate','phone','city','state','defaulter'];
+    protected $fillable         = ['external_code', 'user', 'cpf','name','email','birthdate','phone','city','state','defaulter'];
 
     protected $allowedSorts     = ['name','email','birthdate','city','updated_at'];
 

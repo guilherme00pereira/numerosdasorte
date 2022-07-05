@@ -6,6 +6,7 @@ use App\Models\Blog;
 use Illuminate\Http\Request;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Fields\Quill;
 use Orchid\Screen\Fields\SimpleMDE;
 use Orchid\Screen\Screen;
 use Orchid\Support\Color;
@@ -55,7 +56,7 @@ class EditHelp extends Screen
     {
         return [
             Layout::rows([
-                SimpleMDE::make('raffle_rules.content')
+                Quill::make('raffle_rules.content')
                     ->title('Texto'),
                 Button::make('Salvar')->method('saveHelpText')->type(Color::PRIMARY()),
             ])

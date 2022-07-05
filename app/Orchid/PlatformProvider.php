@@ -61,6 +61,18 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon("grid")
                 ->route("platform.customers.dashboard")
                 ->permission('customer.painel'),
+            Menu::make("Meus Números")
+                ->icon("number-list")
+                ->route("platform.customers.mynumbers")
+                ->permission('customer.painel'),
+            Menu::make("Ganhadores")
+                ->icon("badge")
+                ->route("platform.customers.winners")
+                ->permission('customer.painel'),
+            Menu::make("Sorteios e Prêmios")
+                ->icon("calendar")
+                ->route("platform.customers.raffles")
+                ->permission('customer.painel'),
             Menu::make("Ajuda")
                 ->icon("question")
                 ->route("platform.customers.help")

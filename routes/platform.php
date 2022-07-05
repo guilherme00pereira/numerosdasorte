@@ -18,7 +18,10 @@ use App\Orchid\Screens\Examples\ExampleScreen;
 use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
 use App\Orchid\Screens\PlatformScreen;
 use App\Orchid\Screens\Admin\Raffles;
+use App\Orchid\Screens\Customers\CustomerPrizes;
+use App\Orchid\Screens\Customers\CustomerWinners;
 use App\Orchid\Screens\Customers\HelpText;
+use App\Orchid\Screens\Customers\MyNumbers;
 use App\Orchid\Screens\Customers\ProfileEdit;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
@@ -138,6 +141,9 @@ Route::screen('editar-pagina-ajuda', EditHelp::class)->name('platform.edit_help_
 Route::middleware(['access:customer.painel'])->group(function(){
     Route::screen('painel-cliente', CustomerDashboard::class)->name('platform.customers.dashboard');
     Route::screen('editar-perfil', ProfileEdit::class)->name('platform.customers.edit-profile');
+    Route::screen('meus-numeros', MyNumbers::class)->name('platform.customers.mynumbers');
+    Route::screen('ver-ganhadores', CustomerWinners::class)->name('platform.customers.winners');
+    Route::screen('sorteios', CustomerPrizes::class)->name('platform.customers.raffles');
     Route::screen('ajuda', HelpText::class)->name('platform.customers.help');
 });
 

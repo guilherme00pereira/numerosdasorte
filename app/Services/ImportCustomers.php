@@ -32,6 +32,7 @@ class ImportCustomers
                         'permissions'   => $role->permissions
                     ]);
                     $user->addRole($role);
+                    
                     Customer::create([
                         'external_code' => $customer->id,
                         'user'          => $user->id,
@@ -44,6 +45,7 @@ class ImportCustomers
                         'state'         => $customer->estado,
                         'defaulter'     => $customer->status === 'inadimplente'
                     ]);
+                    
                 } else {
                     $existingCustomer->cpf          = $customer->cpf;
                     $existingCustomer->name         = $customer->nome;
