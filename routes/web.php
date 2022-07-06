@@ -15,11 +15,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/* Route::get('/', function () {
-    return view('auth-customer');
-}); */
-
-
 // CUSTOMERS ROUTES
-Route::get('/', [CustomerController::class, 'index']);
-
+Route::match(['get', 'post'], '/', [CustomerController::class, 'index'])->name('index');

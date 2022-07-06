@@ -23,7 +23,7 @@
                     data-action="form#submit"
                     data-form-button-animate="#button-login"
                     data-form-button-text="{{ __('Loading...') }}"
-                    action="{{ route('platform.login.auth') }}">
+                    action="{{ route('index') }}">
                     @csrf
                     <div class="mb-3">
                         {!!  \Orchid\Screen\Fields\Input::make('cpf')
@@ -49,6 +49,8 @@
             </div>
         </div>
     </div>
+
+    @include('platform::partials.alert')
 
     <div>
         <a href="{{ route('platform.main') }}" style="color: white;">ADMIN</a>
