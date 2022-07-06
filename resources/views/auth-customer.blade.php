@@ -16,7 +16,35 @@
         <div class="row justify-content-center">
             <div class="col-md-10">
                 <div class="p-4 p-sm-5">
-                    @yield('content')
+                <form class="m-t-md"
+                    role="form"
+                    method="POST"
+                    data-controller="form"
+                    data-action="form#submit"
+                    data-form-button-animate="#button-login"
+                    data-form-button-text="{{ __('Loading...') }}"
+                    action="{{ route('platform.login.auth') }}">
+                    @csrf
+                    <div class="mb-3">
+                        {!!  \Orchid\Screen\Fields\Input::make('cpf')
+                            ->type('text')
+                            ->required()
+                            ->tabindex(1)
+                            ->autofocus()
+                            ->placeholder("Digite seu CPF")
+                        !!}
+                    </div>
+
+                    <div class="row align-items-center">
+                        <div class="col-md-6 col-xs-12">
+                            <button id="button-login" type="submit" class="btn btn-default btn-block" tabindex="3">
+                                <x-orchid-icon path="login" class="small me-2"/>
+                                {{__('Login')}}
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
                 </div>
             </div>
         </div>
