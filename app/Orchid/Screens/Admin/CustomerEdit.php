@@ -3,17 +3,19 @@
 namespace App\Orchid\Screens\Admin;
 
 use App\Models\Customer;
+use Illuminate\Http\Request;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Screen;
 use Orchid\Support\Color;
+use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
 
 class CustomerEdit extends Screen
 {
-    public $customer;
+    public Customer $customer;
     /**
      * Query data.
      *
@@ -43,7 +45,10 @@ class CustomerEdit extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            Button::make('Salvar')->method('saveProfile')->type(Color::PRIMARY()),
+            Button::make('Excluir')->method('removeProfile')->type(Color::DANGER()),
+        ];
     }
 
     /**
@@ -87,13 +92,21 @@ class CustomerEdit extends Screen
                         ->title('Última atualização')
                         ->vertical()
                 ]),
-                Button::make('Salvar')->method('saveProfile')->type(Color::PRIMARY()),
             ])
         ];
     }
 
-    public function saveProfile()
+    public function saveProfile( Customer $customer, Request $request )
     {
+        $customer->fill($request->get("customer"))->save();
+        Alert::info('Perfil do cliente editado com sucesso.');
+        return redirect()->route('platform.customers');
+    }
 
+    public function removeProfile( Customer $customer )
+    {
+        $customer->delete();
+        Alert::info('Perfil do cliente excluído com sucesso.');
+        return redirect()->route('platform.customers');
     }
 }

@@ -15,12 +15,14 @@ return new class extends Migration
     {
         Schema::create('raffles', function (Blueprint $table) {
             $table->id();
-            $table->date('raffle_date');
-            $table->string('prize', 1024);
-            $table->unsignedBigInteger('winner');
-            $table->string('chosen_number', 6);
+            $table->datetime('raffle_date');
+            $table->string('prize', 4096)->nullable();
+            $table->unsignedBigInteger('winner')->nullable();
+            $table->string('chosen_number', 6)->nullable();
+            $table->unsignedBigInteger('category');
             $table->timestamps();
             $table->foreign('winner')->references('id')->on('customers');
+            $table->foreign('category')->references('id')->on('raffle_categories');
         });
     }
 

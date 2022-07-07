@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Orchid\Layouts;
+namespace App\Orchid\Layouts\Tables;
 
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;

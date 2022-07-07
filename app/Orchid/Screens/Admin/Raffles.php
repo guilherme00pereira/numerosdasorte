@@ -2,13 +2,13 @@
 
 namespace App\Orchid\Screens\Admin;
 
+use App\Models\Raffle;
+use App\Orchid\Layouts\Tables\RafflesTableLayout;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Fields\DateTimer;
 use Orchid\Screen\Fields\Group;
-use Orchid\Screen\Fields\Input;
-use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Screen;
 use Orchid\Support\Color;
 use Orchid\Support\Facades\Layout;
@@ -22,7 +22,9 @@ class Raffles extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        return [
+            'raffles'   => Raffle::filters()->defaultSort('created_at')->paginate()
+        ];
     }
 
     /**
@@ -32,7 +34,7 @@ class Raffles extends Screen
      */
     public function name(): ?string
     {
-        return 'Sorteios e Prêmios';
+        return 'Sorteios Realizados';
     }
 
     /**
@@ -63,6 +65,7 @@ class Raffles extends Screen
                     ])
                 ])
             ]),
+            RafflesTableLayout::class
         ];
     }
 

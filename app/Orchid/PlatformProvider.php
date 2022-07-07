@@ -35,9 +35,17 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon("people")
                 ->route("platform.customers")
                 ->permission('manager.painel'),
+            Menu::make("Números da Sorte")
+                ->icon("number-list")
+                ->route("platform.luckynumbers")
+                ->permission('manager.painel'),
             Menu::make("Sorteios e Prêmios")
                 ->icon("calendar")
                 ->route("platform.raffles")
+                ->permission('manager.painel'),
+            Menu::make("Categorias de sorteio")
+                ->icon("organization")
+                ->route("platform.raffle.categories")
                 ->permission('manager.painel'),
             Menu::make("Ganhadores")
                 ->icon("badge")

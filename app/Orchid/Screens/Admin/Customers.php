@@ -4,7 +4,7 @@ namespace App\Orchid\Screens\Admin;
 
 use Illuminate\Http\Request;
 use App\Models\Customer;
-use App\Orchid\Layouts\CustomersTableLayout;
+use App\Orchid\Layouts\Tables\CustomersTableLayout;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;

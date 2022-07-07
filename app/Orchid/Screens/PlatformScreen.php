@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Orchid\Screens;
 
 use App\Models\Customer;
-use App\Orchid\Layouts\LatestCustomersTableLayout;
+use App\Orchid\Layouts\Tables\LatestCustomersTableLayout;
 use Orchid\Screen\Action;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;

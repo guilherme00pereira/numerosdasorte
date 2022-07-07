@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Blog;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Orchid\Platform\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
