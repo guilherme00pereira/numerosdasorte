@@ -2,11 +2,12 @@
 
 namespace App\Orchid\Layouts\Tables;
 
+use App\Models\Raffle;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 
-class CategoriesTableLayout extends Table
+class WinnersTableLayout extends Table
 {
     /**
      * Data source.
@@ -16,7 +17,7 @@ class CategoriesTableLayout extends Table
      *
      * @var string
      */
-    protected $target = 'categories';
+    protected $target = 'posts';
 
     /**
      * Get the table cells to be displayed.
@@ -26,13 +27,14 @@ class CategoriesTableLayout extends Table
     protected function columns(): iterable
     {
         return [
-            TD::make('name', 'Categoria')->sort(),
-            TD::make('repeatable', 'Repetível')->render(function ($category){
-                return $category->repeatable ? "Sim" : "Não";
+            TD::make('title', 'Postagens')->sort(),
+            TD::make('raffle', 'Data de Sorteio')->sort()->render(function ($post){
+                $data = Raffle::find($post->raffle);
+                return e(date_format($data->raffle_date, 'd/m/Y H:i'));
             }),
-            TD::make('id', '')->render(function ($category){
+            TD::make('id', '')->render(function ($post){
                 return Link::make('')
-                    ->route('platform.raffle.category', ['id' => $category->id])
+                    ->route('platform.winners.post', ['id' => $post->id])
                     ->icon('note');
             })
         ];

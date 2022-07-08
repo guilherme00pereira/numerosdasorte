@@ -2,6 +2,7 @@
 
 namespace App\Orchid\Screens\Admin;
 
+use App\Models\Raffle;
 use App\Services\ImportCustomers;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
@@ -9,6 +10,7 @@ use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Screen;
 use Orchid\Support\Color;
+use Orchid\Screen\Fields\Select;
 use Orchid\Support\Facades\Layout;
 use Illuminate\Http\Request;
 use Orchid\Support\Facades\Alert;
@@ -68,6 +70,11 @@ class UploadFile extends Screen
                         Input::make('import_orders')
                             ->type('file')
                             ->title('Importar Pedidos')
+                            ->vertical(),
+                        Select::make('post.raffle')
+                            ->multiple()
+                            ->title('Vincular Sorteio(s)')
+                            ->fromModel(Raffle::class, 'raffle_date')
                             ->vertical(),
                         Button::make('Importar')->method('handleOrdersFileUpload')->type(Color::PRIMARY()),
                     ])

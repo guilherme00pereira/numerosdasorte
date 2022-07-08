@@ -7,6 +7,7 @@ use App\Models\RaffleCategory;
 use Illuminate\Http\Request;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Fields\DateTimer;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
@@ -50,6 +51,7 @@ class RaffleEdit extends Screen
     public function commandBar(): iterable
     {
         return [
+            Link::make("Cancelar")->route("platform.raffles")->type(Color::LIGHT()),
             Button::make('Salvar')->method('saveRaffle')->type(Color::PRIMARY()),
             Button::make('Excluir')->method('removeRaffle')->type(Color::DANGER()),
         ];
@@ -104,5 +106,6 @@ class RaffleEdit extends Screen
         $raffle->category       = $preRaffle['category'];
         $raffle->save();
         Alert::info('Sorteio editado com sucesso.');
+        return redirect()->route('platform.raffles');
     }
 }

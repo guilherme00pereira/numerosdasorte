@@ -5,6 +5,7 @@ namespace App\Orchid\Screens\Admin;
 use App\Models\RaffleCategory;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Fields\CheckBox;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
@@ -46,6 +47,7 @@ class RaffleCategoryEdit extends Screen
     public function commandBar(): iterable
     {
         return [
+            Link::make("Cancelar")->route("platform.raffle.categories")->type(Color::LIGHT()),
             Button::make('Salvar')->method('saveCategory')->type(Color::PRIMARY()),
             Button::make('Excluir')->method('removeCategory')->type(Color::DANGER()),
         ];

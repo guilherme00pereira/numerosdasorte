@@ -2,6 +2,10 @@
 
 namespace App\Orchid\Screens\Admin;
 
+use App\Models\Blog;
+use App\Orchid\Layouts\Tables\WinnersTableLayout;
+use Orchid\Screen\Actions\Link;
+use Orchid\Support\Color;
 use Orchid\Screen\Screen;
 
 class Winners extends Screen
@@ -13,7 +17,9 @@ class Winners extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        return [
+            'posts' => Blog::whereNotNull('raffle')->filters()->paginate()
+        ];
     }
 
     /**
@@ -33,7 +39,9 @@ class Winners extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            Link::make("Adicionar Postagem")->route("platform.winners.post")->type(Color::SUCCESS())
+        ];
     }
 
     /**
@@ -43,6 +51,8 @@ class Winners extends Screen
      */
     public function layout(): iterable
     {
-        return [];
+        return [
+            WinnersTableLayout::class
+        ];
     }
 }

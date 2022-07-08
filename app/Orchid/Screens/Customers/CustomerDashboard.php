@@ -50,7 +50,9 @@ class CustomerDashboard extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            
+        ];
     }
 
     /**

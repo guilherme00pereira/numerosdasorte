@@ -26,4 +26,8 @@ class Raffle extends Model
     {
         return $this->hasOne(RaffleCategory::class);
     }
+
+    protected $casts = [
+        'raffle_date' => 'datetime'
+    ];
 }

@@ -5,6 +5,7 @@ namespace App\Orchid\Screens\Admin;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Orchid\Screen\Action;
+use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
@@ -46,6 +47,7 @@ class CustomerEdit extends Screen
     public function commandBar(): iterable
     {
         return [
+            Link::make("Cancelar")->route("platform.customers")->type(Color::LIGHT()),
             Button::make('Salvar')->method('saveProfile')->type(Color::PRIMARY()),
             Button::make('Excluir')->method('removeProfile')->type(Color::DANGER()),
         ];

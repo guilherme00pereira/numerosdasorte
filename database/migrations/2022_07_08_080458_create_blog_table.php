@@ -16,8 +16,10 @@ return new class extends Migration
         Schema::create('blogs', function (Blueprint $table) {
             $table->id();
             $table->string('title', 512);
-            $table->string('tag', 512);
+            $table->string('tag', 512)->nullable();
             $table->text('content');
+            $table->unsignedBigInteger('raffle')->nullable();
+            $table->foreign('raffle')->references('id')->on('raffles');
             $table->timestamps();
         });
     }

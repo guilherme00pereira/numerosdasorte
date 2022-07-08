@@ -30,7 +30,9 @@ class RafflesTableLayout extends Table
                 return $raffle->chosen_number ?? "000000";
             })->sort(),
             TD::make('prize', 'Prêmio'),
-            TD::make('raffle_date', 'Data do Sorteio')->sort(),
+            TD::make('raffle_date', 'Data do Sorteio')->render(function ($raffle){
+                return e(date_format($raffle->raffle_date, 'd/m/Y H:i'));
+            })->sort(),
             TD::make('winner', 'Ganhador do Prêmio' ),
             TD::make('id', '')->render(function ($raffle){
                 return Link::make('')

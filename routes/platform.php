@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Orchid\Screens\Admin\BlogEdit;
 use App\Orchid\Screens\Admin\RaffleCategories;
 use App\Orchid\Screens\Admin\CustomerEdit;
 use App\Orchid\Screens\Admin\Customers;
@@ -143,6 +144,7 @@ Route::screen('editar-sorteio/{id?}', RaffleEdit::class)->name('platform.raffle.
 Route::screen('categorias-sorteio', RaffleCategories::class)->name('platform.raffle.categories');
 Route::screen('categoria-sorteio/{id?}', RaffleCategoryEdit::class)->name('platform.raffle.category');
 Route::screen('ganhadores', Winners::class)->name('platform.winners');
+Route::screen('post/{id?}', BlogEdit::class)->name('platform.winners.post');
 Route::screen('importar-dados', UploadFile::class)->name('platform.upload_file');
 Route::screen('editar-pagina-ajuda', EditHelp::class)->name('platform.edit_help_text');
 

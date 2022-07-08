@@ -4,6 +4,7 @@ namespace App\Orchid\Screens\Admin;
 
 use App\Models\Raffle;
 use App\Orchid\Layouts\Tables\RafflesTableLayout;
+use Illuminate\Http\Request;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
@@ -15,15 +16,25 @@ use Orchid\Support\Facades\Layout;
 
 class Raffles extends Screen
 {
+    protected bool $next;
     /**
      * Query data.
      *
      * @return array
      */
-    public function query(): iterable
+    public function query( Request $request ): iterable
     {
+        $signal     = '<';
+        $this->next = false;
+        if($request->get('next')){
+            if(boolval($request->get('next'))){
+                $signal = '>='; 
+                $this->next = true;
+            }
+        }
+
         return [
-            'raffles'   => Raffle::filters()->defaultSort('created_at')->paginate()
+            'raffles'   => Raffle::where('raffle_date', $signal, now())->filters()->defaultSort('created_at')->paginate(),
         ];
     }
 
@@ -34,7 +45,7 @@ class Raffles extends Screen
      */
     public function name(): ?string
     {
-        return 'Sorteios Realizados';
+        return "Sorteios e Prêmios";
     }
 
     /**
@@ -44,7 +55,11 @@ class Raffles extends Screen
      */
     public function commandBar(): iterable
     {
+        $text       = $this->next ? "Sorteios Realizados" : "Próximos Sorteios";
+        $params     = $this->next ? [] : ['next' => 'true'];
+        $color      = $this->next ? Color::DARK() : Color::WARNING();
         return [
+            Link::make($text)->route("platform.raffles", $params)->type($color),
             Link::make("Adicionar Novo")->route("platform.raffle.edit")->type(Color::SUCCESS())
         ];
     }
