@@ -2,7 +2,11 @@
 
 namespace App\Orchid\Screens\Customers;
 
+use App\Models\Numbers;
+use App\Orchid\Layouts\Tables\MyLuckyNumbersTableLayout;
+use Orchid\Screen\Action;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Layout;
 
 class MyNumbers extends Screen
 {
@@ -13,7 +17,9 @@ class MyNumbers extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        return [
+            'myNumbers'         => Numbers::all()->take(5),
+        ];
     }
 
     /**
@@ -23,13 +29,13 @@ class MyNumbers extends Screen
      */
     public function name(): ?string
     {
-        return 'MyNumbers';
+        return 'Meus Números';
     }
 
     /**
      * Button commands.
      *
-     * @return \Orchid\Screen\Action[]
+     * @return Action[]
      */
     public function commandBar(): iterable
     {
@@ -39,10 +45,12 @@ class MyNumbers extends Screen
     /**
      * Views.
      *
-     * @return \Orchid\Screen\Layout[]|string[]
+     * @return iterable
      */
     public function layout(): iterable
     {
-        return [];
+        return [
+            MyLuckyNumbersTableLayout::class
+        ];
     }
 }

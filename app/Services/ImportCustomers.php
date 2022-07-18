@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Customer;
 use Exception;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Orchid\Platform\Models\Role;
@@ -16,10 +15,10 @@ class ImportCustomers
     /**
      * @throws Exception
      */
-    public static function process($file ): void
+    public static function process( $file ): void
     {
         try {
-            $json               = Storage::get($file);
+            $json               = Storage::get( $file );
             $importedCustomers  = json_decode($json);
             $role               = Role::where('slug', 'cliente')->first();
             foreach ($importedCustomers as $customer) {
@@ -32,7 +31,7 @@ class ImportCustomers
                         'permissions'   => $role->permissions
                     ]);
                     $user->addRole($role);
-                    
+
                     Customer::create([
                         'external_code' => $customer->id,
                         'user'          => $user->id,
@@ -45,7 +44,7 @@ class ImportCustomers
                         'state'         => $customer->estado,
                         'defaulter'     => $customer->status === 'inadimplente'
                     ]);
-                    
+
                 } else {
                     $existingCustomer->cpf          = $customer->cpf;
                     $existingCustomer->name         = $customer->nome;

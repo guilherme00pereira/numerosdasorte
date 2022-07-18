@@ -17,9 +17,14 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('customer');
             $table->unsignedBigInteger('category');
+            $table->unsignedBigInteger('order');
             $table->string('numbers', 4096);
             $table->date('expiration');
             $table->timestamps();
+            $table->foreign('customer')->references('id')->on('customers');
+            $table->foreign('category')->references('id')->on('raffle_categories');
+            $table->foreign('order')->references('id')->on('orders');
+            $table->index(['customer', 'category', 'order']);
         });
     }
 

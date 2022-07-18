@@ -2,6 +2,8 @@
 
 namespace App\Orchid\Screens\Customers;
 
+use App\Models\Numbers;
+use App\Orchid\Layouts\Tables\MyLuckyNumbersTableLayout;
 use Orchid\Screen\Action;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
@@ -16,6 +18,8 @@ class CustomerDashboard extends Screen
     public function query(): iterable
     {
         return [
+            'myNumbers'         => Numbers::all()->take(5),
+            'tableTitle'        => 'Seus últimos números da sorte',
             'stats'             => [
                 [
                     'image'     => 'lottery.png',
@@ -51,7 +55,7 @@ class CustomerDashboard extends Screen
     public function commandBar(): iterable
     {
         return [
-            
+
         ];
     }
 
@@ -64,6 +68,8 @@ class CustomerDashboard extends Screen
     {
         return [
             Layout::view('dashboard-stats'),
+            Layout::view('layout/table-top'),
+            MyLuckyNumbersTableLayout::class
         ];
     }
 }

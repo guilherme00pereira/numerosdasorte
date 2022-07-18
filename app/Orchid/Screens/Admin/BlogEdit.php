@@ -5,6 +5,7 @@ namespace App\Orchid\Screens\Admin;
 use App\Models\Raffle;
 use App\Models\Blog;
 use Illuminate\Http\Request;
+use Orchid\Screen\Action;
 use Orchid\Screen\Screen;
 use Orchid\Screen\Fields\Quill;
 use Orchid\Screen\Actions\Link;
@@ -37,13 +38,13 @@ class BlogEdit extends Screen
      */
     public function name(): ?string
     {
-        return $this->post->exists ? 'Editar Postagem do Blog' : 'Criar Postagem do Blog';
+        return $this->post->exists ? 'Editar Postagem' : 'Criar Postagem';
     }
 
     /**
      * Button commands.
      *
-     * @return \Orchid\Screen\Action[]
+     * @return Action[]
      */
     public function commandBar(): iterable
     {
@@ -57,7 +58,7 @@ class BlogEdit extends Screen
     /**
      * Views.
      *
-     * @return \Orchid\Screen\Layout[]|string[]
+     * @return iterable
      */
     public function layout(): iterable
     {

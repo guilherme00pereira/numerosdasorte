@@ -21,6 +21,7 @@ class PlatformScreen extends Screen
     {
         return [
             'latestCustomers'   => Customer::all()->take(5),
+            'tableTitle'        => 'Últimos clientes cadastrados',
             'stats'             => [
                 [
                     'image'     => 'lottery.png',
@@ -79,6 +80,7 @@ class PlatformScreen extends Screen
     {
         return [
             Layout::view('dashboard-stats'),
+            Layout::view('layout/table-top'),
             LatestCustomersTableLayout::class
         ];
     }

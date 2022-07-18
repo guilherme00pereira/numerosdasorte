@@ -58,3 +58,12 @@
     margin-left: -1rem;
     border-bottom: 1px solid #e3e4e6;
 }
+
+.top-table-info {
+    background-color: #405189;
+    color: white;
+    padding: 5px 15px;
+    border-top-left-radius: 0.5rem!important;
+    border-top-right-radius: 0.5rem !important;
+    font-size: 1.25rem;
+}

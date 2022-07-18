@@ -3,7 +3,10 @@
 namespace App\Orchid\Screens\Admin;
 
 use App\Models\Raffle;
+use App\Models\RaffleCategory;
 use App\Services\ImportCustomers;
+use App\Services\ImportOrders;
+use Illuminate\Support\Facades\Storage;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Group;
@@ -71,10 +74,10 @@ class UploadFile extends Screen
                             ->type('file')
                             ->title('Importar Pedidos')
                             ->vertical(),
-                        Select::make('post.raffle')
+                        Select::make('raffle_category')
                             ->multiple()
-                            ->title('Vincular Sorteio(s)')
-                            ->fromModel(Raffle::class, 'raffle_date')
+                            ->title('Vincular Categoria')
+                            ->fromModel(RaffleCategory::class, 'name')
                             ->vertical(),
                         Button::make('Importar')->method('handleOrdersFileUpload')->type(Color::PRIMARY()),
                     ])
@@ -93,11 +96,17 @@ class UploadFile extends Screen
 
     public function handleOrdersFileUpload(Request $request): void
     {
-        $uploaded = $request->file("import_orders");
-        if ($this->verifyUploadedFile($uploaded)) {
-            $savedFile = $request->file("import_orders")->store('imported');
-        } else {
-            return;
+        $uploaded   = $request->file("import_orders");
+        $categories = $request->get("raffle_category");
+        if ($this->verifyUploadedFile($uploaded) && $this->verifyRaffle($categories)) {
+            $this->cleanImportedStorage();
+            try {
+                $savedFile = $request->file("import_orders")->store('imported');
+                ImportOrders::proccess($savedFile, $categories);
+                Alert::success("Arquivo processado");
+            } catch (\Exception $e) {
+                Alert::error("Erro ao processar o arquivo: " . $e->getMessage());
+            }
         }
     }
 
@@ -112,15 +121,13 @@ class UploadFile extends Screen
             } catch (\Exception $e) {
                 Alert::error("Erro ao processar o arquivo: " . $e->getMessage());
             }
-        } else {
-            return;
         }
     }
 
     private function verifyUploadedFile($uploaded): bool
     {
         if (is_null($uploaded)) {
-            Alert::error("Nenhum arquivo selecionado");
+            Alert::error("Nenhum arquivo selecionado!");
             return false;
         }
         if ($uploaded->extension() != 'json') {
@@ -128,5 +135,23 @@ class UploadFile extends Screen
             return false;
         }
         return true;
+    }
+
+    private function verifyRaffle($categories): bool
+    {
+        if (is_null($categories)) {
+            Alert::error("Selecione ao menos uma categoria de sorteio para vincular aos pedidos!");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @return void
+     */
+    private function cleanImportedStorage(): void
+    {
+        $files = Storage::allFiles("imported");
+        Storage::delete($files);
     }
 }
