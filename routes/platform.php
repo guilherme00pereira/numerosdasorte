@@ -24,7 +24,7 @@ use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
 use App\Orchid\Screens\Admin\NextRaffles;
 use App\Orchid\Screens\PlatformScreen;
 use App\Orchid\Screens\Admin\Raffles;
-use App\Orchid\Screens\Customers\CustomerPrizes;
+use App\Orchid\Screens\Customers\CustomerRaffles;
 use App\Orchid\Screens\Customers\CustomerWinners;
 use App\Orchid\Screens\Customers\HelpText;
 use App\Orchid\Screens\Customers\MyNumbers;
@@ -155,7 +155,7 @@ Route::middleware(['access:customer.painel'])->group(function(){
     Route::screen('editar-perfil', ProfileEdit::class)->name('platform.customers.edit-profile');
     Route::screen('meus-numeros', MyNumbers::class)->name('platform.customers.mynumbers');
     Route::screen('ver-ganhadores', CustomerWinners::class)->name('platform.customers.winners');
-    Route::screen('sorteios', CustomerPrizes::class)->name('platform.customers.raffles');
+    Route::screen('sorteios', CustomerRaffles::class)->name('platform.customers.raffles');
     Route::screen('ajuda', HelpText::class)->name('platform.customers.help');
 });
 

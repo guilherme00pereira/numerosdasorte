@@ -63,4 +63,5 @@ class User extends Authenticatable
         'updated_at',
         'created_at',
     ];
+
 }

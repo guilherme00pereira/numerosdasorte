@@ -2,6 +2,8 @@
 
 namespace App\Orchid\Screens\Customers;
 
+use App\Models\Blog;
+use App\Orchid\Layouts\Tables\WinnersTableLayoutCustomer;
 use Orchid\Screen\Screen;
 
 class CustomerWinners extends Screen
@@ -13,7 +15,9 @@ class CustomerWinners extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        return [
+            'posts' => Blog::whereNotNull('raffle')->filters()->paginate()
+        ];
     }
 
     /**
@@ -23,7 +27,7 @@ class CustomerWinners extends Screen
      */
     public function name(): ?string
     {
-        return 'CustomerWinners';
+        return 'Ganhadores';
     }
 
     /**
@@ -43,6 +47,8 @@ class CustomerWinners extends Screen
      */
     public function layout(): iterable
     {
-        return [];
+        return [
+            WinnersTableLayoutCustomer::class
+        ];
     }
 }
