@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Storage;
 use Orchid\Platform\Models\Role;
 use Orchid\Platform\Models\User;
 
+use function PHPUnit\Framework\isNull;
+
 class ImportCustomers
 {
 
@@ -22,15 +24,18 @@ class ImportCustomers
             $importedCustomers  = json_decode($json);
             $role               = Role::where('slug', 'cliente')->first();
             foreach ($importedCustomers as $customer) {
-                $existingCustomer = Customer::where('email', $customer->email)->first();
+                $existingCustomer = Customer::where('cpf', $customer->cpf)->first();
                 if( is_null( $existingCustomer ) ) {
-                    $user = User::create([
-                        'name'          => $customer->nome,
-                        'email'         => $customer->email,
-                        'password'      => Hash::make('$enha@123'),
-                        'permissions'   => $role->permissions
-                    ]);
-                    $user->addRole($role);
+                    $user = User::where('email', $customer->email)->first();
+                    if( is_null( $user ) ) {
+                        $user = User::create([
+                            'name'          => $customer->nome,
+                            'email'         => $customer->email,
+                            'password'      => Hash::make('$enha@123'),
+                            'permissions'   => $role->permissions
+                        ]);
+                        $user->addRole($role);
+                    }
 
                     Customer::create([
                         'external_code' => $customer->id,
@@ -38,21 +43,21 @@ class ImportCustomers
                         'cpf'           => $customer->cpf,
                         'name'          => $customer->nome,
                         'email'         => $customer->email,
-                        'birthdate'     => $customer->data_nascimento,
+                        'birthdate'     => self::formatDate($customer->data_nascimento),
                         'phone'         => $customer->telefone,
                         'city'          => $customer->cidade,
                         'state'         => $customer->estado,
-                        'defaulter'     => $customer->status === 'inadimplente'
+                        'defaulter'     => strtolower($customer->status) === 'inadimplente'
                     ]);
 
                 } else {
                     $existingCustomer->cpf          = $customer->cpf;
                     $existingCustomer->name         = $customer->nome;
-                    $existingCustomer->birthdate    = $customer->data_nascimento;
+                    $existingCustomer->birthdate    = self::formatDate($customer->data_nascimento);
                     $existingCustomer->phone        = $customer->telefone;
                     $existingCustomer->city         = $customer->cidade;
                     $existingCustomer->state        = $customer->estado;
-                    $existingCustomer->defaulter    = $customer->status === 'inadimplente';
+                    $existingCustomer->defaulter    = strtolower($customer->status) === 'inadimplente';
                     $existingCustomer->save();
                 }
 
@@ -60,6 +65,13 @@ class ImportCustomers
         } catch (Exception $e) {
             throw $e;
         }
+    }
+
+    private static function formatDate( $value )
+    {
+        $value = str_replace("\\", "", $value);
+        $date = \DateTime::createFromFormat('m/d/Y', $value);
+        return $date;
     }
 
 }

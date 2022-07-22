@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Numbers;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Orchid\Filters\Filterable;
@@ -16,5 +17,15 @@ class Customer extends Model
     protected $allowedSorts     = ['name','email','birthdate','city','updated_at'];
 
     protected $allowedFilters   = ['name','email','birthdate','city','updated_at'];
+
+    public function numbers()
+    {
+        return $this->hasMany(Numbers::class);
+    }
+
+    public function totalNumbers()
+    {
+        return $this->numbers->count();
+    }
 
 }

@@ -41,7 +41,8 @@ class CustomersTableLayout extends Table
             TD::make('id', '')->render(function ($customer){
                return Link::make('')
                    ->route('platform.customers.edit', ['id' => $customer->id])
-                   ->icon('note');
+                   ->icon('note')
+                   ->class('icon-svg');
             })
         ];
     }

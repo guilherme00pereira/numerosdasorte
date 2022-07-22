@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Orchid\Screens;
 
 use App\Models\Customer;
+use App\Models\Raffle;
 use App\Orchid\Layouts\Tables\LatestCustomersTableLayout;
 use Orchid\Screen\Action;
 use Orchid\Screen\Screen;
@@ -19,32 +20,35 @@ class PlatformScreen extends Screen
      */
     public function query(): iterable
     {
+        $dbCustomers        = Customer::all();
+        $luckyNumbers       = Raffle::whereNotNull('chosen_number')->count();
+        $prizes             = 0;
         return [
-            'latestCustomers'   => Customer::all()->take(5),
+            'latestCustomers'   => $dbCustomers->take(5),
             'tableTitle'        => 'Últimos clientes cadastrados',
             'stats'             => [
                 [
                     'image'     => 'lottery.png',
                     'pretitle'  => 'TOTAL DE NÚMEROS DA SORTE',
-                    'title'     => 'SORTE ' . '1456',
+                    'title'     => 'SORTE ' . $luckyNumbers,
                     'subtitle'  => 'Total geral de todos os números da sorte para os cliente cadastrados'
                 ],
                 [
                     'image'     => 'badge.png',
                     'pretitle'  => 'VEJA O TOTAL DE',
-                    'title'     => 'PRÊMIOS ' . '456',
+                    'title'     => 'PRÊMIOS ' . $prizes,
                     'subtitle'  => 'Total de prêmios já distribuídos para a base de clientes cadastrada'
                 ],
                 [
                     'image'     => 'customer-feedback.png',
                     'pretitle'  => 'TOTAL GERAL DE',
-                    'title'     => 'CLIENTES ' . '4789',
+                    'title'     => 'CLIENTES ' . $dbCustomers->count(),
                     'subtitle'  => 'Número total de clientes cadastrados na base do sistema'
                 ],
                 [
                     'image'     => 'defaulter.png',
                     'pretitle'  => 'TOTAL DE CLIENTE',
-                    'title'     => 'INADIMPLENTE ' . '789',
+                    'title'     => 'INADIMPLENTE ' . $dbCustomers->where('defaulter', '1')->count(),
                     'subtitle'  => 'Número total de clientes na base do sistema com o status inadimplente'
                 ],
             ]

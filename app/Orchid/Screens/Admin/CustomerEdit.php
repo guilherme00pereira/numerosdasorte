@@ -74,7 +74,7 @@ class CustomerEdit extends Screen
                     Input::make('customer.birthdate')
                         ->title('Data de Nascimento')
                         ->vertical(),
-                    Input::make('customer.name')
+                    Input::make('customer.totalNumbers')
                         ->title('Quantidade de Números da Sorte')
                         ->vertical()
                 ]),

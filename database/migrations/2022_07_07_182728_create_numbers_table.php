@@ -15,16 +15,16 @@ return new class extends Migration
     {
         Schema::create('numbers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('customer');
-            $table->unsignedBigInteger('category');
-            $table->unsignedBigInteger('order');
-            $table->string('numbers', 4096);
+            $table->unsignedBigInteger('customer_id');
+            $table->unsignedBigInteger('category_id');
+            $table->unsignedBigInteger('order_id');
+            $table->string('number', 16);
             $table->date('expiration');
             $table->timestamps();
-            $table->foreign('customer')->references('id')->on('customers');
-            $table->foreign('category')->references('id')->on('raffle_categories');
-            $table->foreign('order')->references('id')->on('orders');
-            $table->index(['customer', 'category', 'order']);
+            $table->foreign('customer_id')->references('id')->on('customers');
+            $table->foreign('category_id')->references('id')->on('raffle_categories');
+            $table->foreign('order_id')->references('id')->on('orders');
+            $table->index(['customer_id', 'category_id', 'order_id', 'number']);
         });
     }
 
