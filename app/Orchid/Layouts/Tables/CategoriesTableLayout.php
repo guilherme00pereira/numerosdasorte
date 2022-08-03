@@ -33,7 +33,8 @@ class CategoriesTableLayout extends Table
             TD::make('id', '')->render(function ($category){
                 return Link::make('')
                     ->route('platform.raffle.category', ['id' => $category->id])
-                    ->icon('note');
+                    ->icon('note')
+                    ->class('icon-svg');
             })
         ];
     }

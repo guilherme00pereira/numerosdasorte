@@ -17,11 +17,11 @@ return new class extends Migration
             $table->id();
             $table->datetime('raffle_date');
             $table->string('prize', 4096)->nullable();
-            $table->unsignedBigInteger('winner')->nullable();
+            $table->unsignedBigInteger('customer')->nullable();
             $table->string('chosen_number', 6)->nullable();
             $table->unsignedBigInteger('category');
             $table->timestamps();
-            $table->foreign('winner')->references('id')->on('customers');
+            $table->foreign('customer')->references('id')->on('customers');
             $table->foreign('category')->references('id')->on('raffle_categories');
         });
     }

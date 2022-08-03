@@ -2,10 +2,11 @@
 
 namespace App\Orchid\Screens\Admin;
 
-use App\Models\Raffle;
+use App\Jobs\ProcessImportCustomers;
+use App\Jobs\ProcessImportOrders;
 use App\Models\RaffleCategory;
-use App\Services\ImportCustomers;
-use App\Services\ImportOrders;
+use App\Services\Importer;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
@@ -20,6 +21,8 @@ use Orchid\Support\Facades\Alert;
 
 class UploadFile extends Screen
 {
+
+    const IMPORT_QUEUE_MESSAGE = "A importação foi iniciada e está sendo processada em segundo plano";
     /**
      * Query data.
      *
@@ -88,7 +91,13 @@ class UploadFile extends Screen
                             ->type('file')
                             ->title('Importar Cliente')
                             ->vertical(),
-                        Button::make('Importar')->method('handleCustomerFileUpload')->type(Color::PRIMARY()),
+                        Button::make('Importar')
+                            ->method('handleCustomerFileUpload')
+                            ->type(Color::PRIMARY())
+                            ->parameters([
+                                'id'            => 123,
+                                'data-action' => 'click->importer#importCustomers'
+                            ]),
                     ])
                 ])
         ];
@@ -99,11 +108,13 @@ class UploadFile extends Screen
         $uploaded   = $request->file("import_orders");
         $categories = $request->get("raffle_category");
         if ($this->verifyUploadedFile($uploaded) && $this->verifyRaffle($categories)) {
-            $this->cleanImportedStorage();
             try {
                 $savedFile = $request->file("import_orders")->store('imported');
-                ImportOrders::proccess($savedFile, $categories);
-                Alert::success("Arquivo processado");
+                //ProcessImportOrders::dispatch( $savedFile, $categories );
+                //Alert::success(self::IMPORT_QUEUE_MESSAGE);
+                $importer = new Importer($savedFile, $categories);
+                $importer->importOrders();
+                Alert::success("Importação dos pedidos realizada com sucesso!");
             } catch (\Exception $e) {
                 Alert::error("Erro ao processar o arquivo: " . $e->getMessage());
             }
@@ -116,8 +127,11 @@ class UploadFile extends Screen
         if ($this->verifyUploadedFile($uploaded)) {
             try {
                 $savedFile = $request->file("import_customers")->store('imported');
-                ImportCustomers::process($savedFile);
-                Alert::success("Arquivo processado");
+//                ProcessImportCustomers::dispatch( $savedFile );
+//                Alert::success(self::IMPORT_QUEUE_MESSAGE);
+                $importer = new Importer($savedFile);
+                $importer->importCustomers();
+                Alert::success("Importação dos clientes realizada com sucesso!");
             } catch (\Exception $e) {
                 Alert::error("Erro ao processar o arquivo: " . $e->getMessage());
             }

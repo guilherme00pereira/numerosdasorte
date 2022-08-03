@@ -3,6 +3,7 @@
 namespace App\Orchid\Screens\Customers;
 
 use App\Models\Blog;
+use Orchid\Screen\Action;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
 
@@ -33,7 +34,7 @@ class HelpText extends Screen
     /**
      * Button commands.
      *
-     * @return \Orchid\Screen\Action[]
+     * @return Action[]
      */
     public function commandBar(): iterable
     {
@@ -43,7 +44,7 @@ class HelpText extends Screen
     /**
      * Views.
      *
-     * @return \Orchid\Screen\Layout[]|string[]
+     * @return iterable
      */
     public function layout(): iterable
     {

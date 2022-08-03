@@ -2,6 +2,8 @@
 
 namespace App\Orchid\Layouts\Tables;
 
+use App\Services\Helper;
+use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 
@@ -15,7 +17,7 @@ class MyLuckyNumbersTableLayout extends Table
      *
      * @var string
      */
-    protected $target = 'myNumbers';
+    protected $target = 'numbers';
 
     /**
      * Get the table cells to be displayed.
@@ -26,9 +28,31 @@ class MyLuckyNumbersTableLayout extends Table
     {
         return [
             TD::make('number', 'Número'),
-            TD::make('order', 'Pedido'),
-            TD::make('created_at', 'Data de Emissão')->render(function ($customer){
-                return e(date_format($customer->created_at, 'd/m/Y'));
+            TD::make('order_id', 'Pedido'),
+            TD::make('created_at', 'Data de Emissão')->render(function ($number){
+                return Helper::brDate($number->created_at);
+            }),
+            TD::make('expiration', 'Vencimento')->render(function ($number){
+                return Helper::brDate($number->expiration);
+            }),
+            TD::make('raffle', '')->render(function ($number){
+                $winner = $number->presenter()->isWinner();
+                if( !is_null( $winner ) ) {
+                    return ModalToggle::make('')
+                        ->modal('winner')
+                        ->icon('badge')
+                        ->asyncParameters($winner->prize)
+                        ->class('btn-modal-winner');
+                }
+                $discarded = $number->presenter()->gotDiscarded();
+                if( !is_null( $discarded ) ) {
+                    return ModalToggle::make('')
+                        ->modal('loser')
+                        ->icon('bell')
+                        ->asyncParameters($discarded)
+                        ->class('btn-modal-discarded');
+                }
+                return "";
             }),
         ];
     }

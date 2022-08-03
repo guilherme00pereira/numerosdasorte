@@ -2,9 +2,12 @@
 
 namespace App\Orchid\Screens\Admin;
 
+use App\Models\Customer;
 use App\Models\Raffle;
 use App\Models\RaffleCategory;
+use App\Services\RaffleManager;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
@@ -66,13 +69,14 @@ class RaffleEdit extends Screen
     {
         return [
             Layout::rows([
+                Input::make('raffle.id')->type('hidden'),
                 Group::make([
-                    Input::make('number')
+                    Input::make('setnumber')
                         ->title('Número da sorte')
                         ->vertical(),
                     DateTimer::make('raffle.raffle_date')
                         ->title('Data do Sorteio')
-                        ->format('d/m/Y H:i')
+                        //->format('d/m/Y H:i')
                         ->format24hr()
                         ->enableTime()
                         ->vertical()
@@ -82,8 +86,10 @@ class RaffleEdit extends Screen
                         ->title('Categoria')
                         ->fromModel(RaffleCategory::class, 'name')
                         ->vertical(),
-                    Input::make('raffle.winner')
+                    Select::make('raffle.customer')
+                        ->empty('', 0)
                         ->title('Ganhador')
+                        ->fromModel(Customer::class, 'name')
                         ->vertical()
                 ]),
                 Group::make([
@@ -99,13 +105,29 @@ class RaffleEdit extends Screen
 
     public function saveRaffle( Raffle $raffle, Request $request)
     {
+        try {
+        $raffleWinner           = null;
+        $raffleNumber           = null;
         $preRaffle              = $request['raffle'];
-        $data                   = \DateTime::createFromFormat('d/m/Y H:i', $preRaffle['raffle_date']);
-        $raffle->raffle_date    = $data;
-        $raffle->prize          = $preRaffle['prize'];
-        $raffle->category       = $preRaffle['category'];
+
+        if( $request["setnumber"] ) {
+            $raffleManager      = new RaffleManager( $raffle['id'], $request["setnumber"], $preRaffle['category']);
+            $raffleNumber       = $raffleManager->chooseNumber();
+            $raffleWinner       = $raffleManager->getWinnerId();
+        }
+
+        $raffle->raffle_date        = $preRaffle['raffle_date'];
+        $raffle->prize              = $preRaffle['prize'];
+        $raffle->category           = $preRaffle['category'];
+        $raffle->lottery_number     = $request["setnumber"];
+        $raffle->number             = $raffleNumber;
+        $raffle->customer           = $raffleWinner;
         $raffle->save();
         Alert::info('Sorteio editado com sucesso.');
+        } catch (\Exception $e) {
+            Alert::error('Erro ao salvar dados do sorteio');
+            Log::error("Erro ao salvar dados do sorteio: " . $e->getMessage());
+        }
         return redirect()->route('platform.raffles');
     }
 }

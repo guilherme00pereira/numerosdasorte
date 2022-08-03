@@ -13,6 +13,7 @@ use Orchid\Screen\Screen;
 use Orchid\Support\Color;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
+use phpDocumentor\Reflection\PseudoTypes\Numeric_;
 
 class CustomerEdit extends Screen
 {
@@ -25,7 +26,8 @@ class CustomerEdit extends Screen
     public function query(Customer $customer): iterable
     {
         return [
-            'customer' => $customer
+            'customer'  => $customer,
+            'numbers'   => $customer->numbers()->count()
         ];
     }
 
@@ -74,8 +76,9 @@ class CustomerEdit extends Screen
                     Input::make('customer.birthdate')
                         ->title('Data de Nascimento')
                         ->vertical(),
-                    Input::make('customer.totalNumbers')
+                    Input::make('numbers')
                         ->title('Quantidade de Números da Sorte')
+                        ->readonly()
                         ->vertical()
                 ]),
                 Group::make([

@@ -27,9 +27,9 @@ class CustomersTableLayout extends Table
     {
         return [
             TD::make('name', 'Nome Completo')->sort(),
-            TD::make('phone', 'Telefone'),
-            TD::make('cpf', 'CPF'),
-            TD::make('city', 'Cidade'),
+            TD::make('phone', 'Telefone')->sort(),
+            TD::make('cpf', 'CPF')->sort(),
+            TD::make('city', 'Cidade')->sort(),
             TD::make('created_at', 'Data de Cadastro')->sort()->render(function ($customer){
                 return e(date_format($customer->created_at, 'd/m/Y'));
             }),

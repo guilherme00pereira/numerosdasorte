@@ -6,6 +6,7 @@ use App\Models\Customer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Fields\DateTimer;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Screen;
@@ -36,7 +37,7 @@ class ProfileEdit extends Screen
      */
     public function name(): ?string
     {
-        return 'Editar Perfil';
+        return 'Ver Perfil';
     }
 
     /**
@@ -68,8 +69,9 @@ class ProfileEdit extends Screen
                         ->vertical()
                 ]),
                 Group::make([
-                    Input::make('user.birthdate')
+                    DateTimer::make('user.birthdate')
                         ->title('Data de Nascimento')
+                        ->format('d/m/Y')
                         ->vertical(),
                     Input::make('user.name')
                         ->title('Quantidade de Números da Sorte')
@@ -89,9 +91,9 @@ class ProfileEdit extends Screen
                         ->vertical(),
                     Input::make('user.updated_at')
                         ->title('Última atualização')
+                        ->readonly()
                         ->vertical()
                 ]),
-                Button::make('Salvar')->method('saveProfile')->type(Color::PRIMARY()),
             ])
         ];
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Orchid\Presenters;
 
+use App\Models\Customer;
 use Illuminate\Support\Str;
 use Laravel\Scout\Builder;
 use Orchid\Screen\Contracts\Personable;
@@ -78,5 +79,25 @@ class UserPresenter extends Presenter implements Searchable, Personable
     public function searchQuery(string $query = null): Builder
     {
         return $this->entity->search($query);
+    }
+
+    public function isCustomer(): bool
+    {
+        $customer = Customer::find($this->entity->id)->first();
+        if( is_null( $customer ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    public function defaulterStatus(): null|bool
+    {
+        $customer = Customer::where('user', $this->entity->id)->first();
+        if( is_null( $customer ) ) {
+            return null;
+        } else {
+            return $customer->defaulter === 1;
+        }
+
     }
 }

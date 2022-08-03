@@ -13,6 +13,7 @@ use App\Orchid\Screens\Admin\UploadFile;
 use App\Orchid\Screens\Admin\EditHelp;
 use App\Orchid\Screens\Admin\RaffleEdit;
 use App\Orchid\Screens\Admin\Winners;
+use App\Orchid\Screens\Customers\BlogShow;
 use App\Orchid\Screens\Customers\CustomerDashboard;
 use App\Orchid\Screens\Examples\ExampleCardsScreen;
 use App\Orchid\Screens\Examples\ExampleChartsScreen;
@@ -134,19 +135,21 @@ Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('pla
 //Route::screen('idea', Idea::class, 'platform.screens.idea');
 
 // ADMIN ROUTES
-Route::screen('clientes', Customers::class)->name('platform.customers');
-Route::screen('editar-perfil-cliente/{id}', CustomerEdit::class)->name('platform.customers.edit');
-Route::screen('numeros-da-sorte', LuckyNumbers::class)->name('platform.luckynumbers');
-Route::screen('editar-numero-da-sorte', NewLuckyNumber::class)->name('platform.newluckynumber');
-Route::screen('sorteios-e-premios', Raffles::class)->name('platform.raffles');
-Route::screen('proximos-sorteios', NextRaffles::class)->name('platform.next_raffles');
-Route::screen('editar-sorteio/{id?}', RaffleEdit::class)->name('platform.raffle.edit');
-Route::screen('categorias-sorteio', RaffleCategories::class)->name('platform.raffle.categories');
-Route::screen('categoria-sorteio/{id?}', RaffleCategoryEdit::class)->name('platform.raffle.category');
-Route::screen('ganhadores', Winners::class)->name('platform.winners');
-Route::screen('post/{id?}', BlogEdit::class)->name('platform.winners.post');
-Route::screen('importar-dados', UploadFile::class)->name('platform.upload_file');
-Route::screen('editar-pagina-ajuda', EditHelp::class)->name('platform.edit_help_text');
+Route::middleware(['access:manager.painel'])->group(function(){
+    Route::screen('clientes', Customers::class)->name('platform.customers');
+    Route::screen('editar-perfil-cliente/{id}', CustomerEdit::class)->name('platform.customers.edit');
+    Route::screen('numeros-da-sorte', LuckyNumbers::class)->name('platform.luckynumbers');
+    Route::screen('editar-numero-da-sorte', NewLuckyNumber::class)->name('platform.newluckynumber');
+    Route::screen('sorteios-e-premios', Raffles::class)->name('platform.raffles');
+    Route::screen('proximos-sorteios', NextRaffles::class)->name('platform.next_raffles');
+    Route::screen('editar-sorteio/{id?}', RaffleEdit::class)->name('platform.raffle.edit');
+    Route::screen('categorias-sorteio', RaffleCategories::class)->name('platform.raffle.categories');
+    Route::screen('categoria-sorteio/{id?}', RaffleCategoryEdit::class)->name('platform.raffle.category');
+    Route::screen('ganhadores', Winners::class)->name('platform.winners');
+    Route::screen('post/{id?}', BlogEdit::class)->name('platform.winners.post');
+    Route::screen('importar-dados', UploadFile::class)->name('platform.upload_file');
+    Route::screen('editar-pagina-ajuda', EditHelp::class)->name('platform.edit_help_text');
+});
 
 
 // CUSTOMERS ROUTES
@@ -155,6 +158,7 @@ Route::middleware(['access:customer.painel'])->group(function(){
     Route::screen('editar-perfil', ProfileEdit::class)->name('platform.customers.edit-profile');
     Route::screen('meus-numeros', MyNumbers::class)->name('platform.customers.mynumbers');
     Route::screen('ver-ganhadores', CustomerWinners::class)->name('platform.customers.winners');
+    Route::screen('ganhadores/{id?}', BlogShow::class)->name('platform.customers.winner_post');
     Route::screen('sorteios', CustomerRaffles::class)->name('platform.customers.raffles');
     Route::screen('ajuda', HelpText::class)->name('platform.customers.help');
 });

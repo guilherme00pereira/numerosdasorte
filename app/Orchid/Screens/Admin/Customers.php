@@ -2,9 +2,12 @@
 
 namespace App\Orchid\Screens\Admin;
 
+use App\Orchid\Filters\CustomerFilter;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Orchid\Layouts\Tables\CustomersTableLayout;
+use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
@@ -15,15 +18,22 @@ use Orchid\Support\Color;
 
 class Customers extends Screen
 {
+    private mixed $defaulter;
+
     /**
      * Query data.
      *
      * @return array
      */
-    public function query(): iterable
+    public function query( Request $request ): iterable
     {
+        $customers              = Customer::orderBy('created_at', 'desc');
+        if( !is_null( $request->get('dft') ) ) {
+            $this->defaulter    = $request->get("dft");
+            $customers          = $customers->where('defaulter', $this->defaulter);
+        }
         return [
-            'customers' => Customer::filters()->defaultSort('created_at')->paginate()
+            'customers' => $customers->filters()->paginate()
         ];
     }
 
@@ -40,7 +50,7 @@ class Customers extends Screen
     /**
      * Button commands.
      *
-     * @return \Orchid\Screen\Action[]
+     * @return Action[]
      */
     public function commandBar(): iterable
     {
@@ -55,16 +65,16 @@ class Customers extends Screen
     public function layout(): iterable
     {
         return [
-            Layout::wrapper('filters.customers-bar', [
+            Layout::wrapper('filters-bar', [
                 'searchFields'        => Layout::rows([
                     Group::make([
-                        Select::make('defaulter')->options([
+                        Select::make('dft')->options([
                             'todos'         => 'Todos',
                             'adimplente'    => 'Adimplente',
                             'inadimplente'  => 'Inadimplente'
                         ])->title('Status do cliente'),
                         Input::make('name')->title('Busca por nome'),
-                        Input::make('cpf')->title('Busca por CPF'),
+                        Input::make('cpf')->title('Busca por CPF')->mask('999.999.999-99'),
                         Button::make('Buscar')->method('filterCustomers')->type(Color::PRIMARY())
                     ])
                 ])
@@ -73,24 +83,24 @@ class Customers extends Screen
         ];
     }
 
-    public function filterCustomers( Request $request )
+    public function filterCustomers( Request $request ): RedirectResponse
     {
         $queryParams = "";
-        if($request['defaulter']) {
-            if('todos' !== $request['defaulter']) {
-                $queryParams .= "[defaulter]=" . ($request['defaulter'] === 'adimplente' ? 0 : 1);
+        if($request['dft']) {
+            if('todos' !== $request['dft']) {
+                $queryParams .= "dft=" . ($request['dft'] === 'adimplente' ? 0 : 1);
             }
         }
         if($request['name']) {
-            $queryParams .= "[name]=" . $request['name'];
+            $queryParams .= "&filter[name]=" . $request['name'];
         }
         if($request['cpf']) {
-            $queryParams .= "[cpf]=" . $request['cpf'];
+            $queryParams .= "&filter[cpf]=" . $request['cpf'];
         }
         if(empty($queryParams)) {
                return redirect()->to('/admin/clientes');
         } else {
-            return redirect()->to('/admin/clientes?filter' . $queryParams);
+            return redirect()->to('/admin/clientes?' . $queryParams);
         }
     }
 }

@@ -10,6 +10,7 @@ use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Fields\DateTimer;
 use Orchid\Screen\Fields\Group;
+use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Screen;
 use Orchid\Support\Color;
 use Orchid\Support\Facades\Layout;
@@ -18,23 +19,46 @@ class Raffles extends Screen
 {
     protected bool $next;
     /**
+     * @var int|mixed
+     */
+    private mixed $year;
+    /**
+     * @var mixed|string
+     */
+    private mixed $month;
+
+    /**
      * Query data.
      *
      * @return array
      */
     public function query( Request $request ): iterable
     {
-        $signal     = '<';
-        $this->next = false;
+        $this->year         = date('Y');
+        $this->month        = date('m');
+        $signal             = '<';
+        $this->next         = false;
         if($request->get('next')){
-            if(boolval($request->get('next'))){
-                $signal = '>='; 
+            if($request->get('next')){
+                $signal     = '>=';
                 $this->next = true;
             }
         }
-
+        $selectedRaffles    = Raffle::query()->orderBy('created_at', 'desc');
+        if( is_null( $request->get('year' ) ) && is_null( $request->get('month' ) ) )
+            $selectedRaffles    = $selectedRaffles->where('raffle_date', $signal, now());
+        else {
+            if( !is_null( $request->get('year') ) ) {
+                $this->year         = $request->get("year");
+                $selectedRaffles    = $selectedRaffles->whereYear('raffle_date', $this->year);
+            }
+            if( !is_null( $request->get('month') ) ) {
+                $this->month        = $request->get("month");
+                $selectedRaffles    = $selectedRaffles->whereMonth('raffle_date', $this->month);
+            }
+        }
         return [
-            'raffles'   => Raffle::where('raffle_date', $signal, now())->filters()->defaultSort('created_at')->paginate(),
+            'raffles'   => $selectedRaffles->filters()->paginate()
         ];
     }
 
@@ -72,10 +96,20 @@ class Raffles extends Screen
     public function layout(): iterable
     {
         return [
-            Layout::wrapper('filters.raffles-bar', [
+            Layout::wrapper('filters-bar', [
                 'searchFields'        => Layout::rows([
                     Group::make([
-                        DateTimer::make('year')->title('')->format('Y'),
+                        Input::make('year')
+                            ->type("number")
+                            ->min(2020)
+                            ->value($this->year)
+                            ->title('Ano'),
+                        Input::make('month')
+                            ->type("number")
+                            ->value($this->month)
+                            ->min(1)
+                            ->max(12)
+                            ->title('Mês'),
                         Button::make('Buscar')->method('filterRaffles')->type(Color::PRIMARY())
                     ])
                 ])
@@ -84,8 +118,19 @@ class Raffles extends Screen
         ];
     }
 
-    public function filterRaffles()
+    public function filterRaffles( Request $request )
     {
-
+        $queryParams = "";
+        if($request['month']) {
+            $queryParams .= "month=" . $request['month'];
+        }
+        if($request['year']) {
+            $queryParams .= "&year=" . $request['year'];
+        }
+        if(empty($queryParams)) {
+            return redirect()->to('/admin/sorteios-e-premios');
+        } else {
+            return redirect()->to('/admin/sorteios-e-premios?' . $queryParams);
+        }
     }
 }

@@ -27,7 +27,9 @@ class WinnersTableLayoutCustomer extends Table
     protected function columns(): iterable
     {
         return [
-            TD::make('title', 'Postagens')->sort(),
+            TD::make('title', 'Título')->render(function ($blog) {
+                return Link::make($blog->title)->route('platform.customers.winner_post', $blog->id);
+            })->sort(),
             TD::make('raffle', 'Data de Sorteio')->sort()->render(function ($post){
                 $data = Raffle::find($post->raffle);
                 return e(date_format($data->raffle_date, 'd/m/Y H:i'));

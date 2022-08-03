@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
-class RaffleNumbers
+trait FilterYearMonthTrait
 {
+
+
 
 }

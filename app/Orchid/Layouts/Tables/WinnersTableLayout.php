@@ -35,7 +35,8 @@ class WinnersTableLayout extends Table
             TD::make('id', '')->render(function ($post){
                 return Link::make('')
                     ->route('platform.winners.post', ['id' => $post->id])
-                    ->icon('note');
+                    ->icon('note')
+                    ->class('icon-svg');
             })
         ];
     }

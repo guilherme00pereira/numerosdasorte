@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Orchid\Screens;
 
 use App\Models\Customer;
+use App\Models\Number;
 use App\Models\Raffle;
 use App\Orchid\Layouts\Tables\LatestCustomersTableLayout;
 use Orchid\Screen\Action;
@@ -21,8 +22,8 @@ class PlatformScreen extends Screen
     public function query(): iterable
     {
         $dbCustomers        = Customer::all();
-        $luckyNumbers       = Raffle::whereNotNull('chosen_number')->count();
-        $prizes             = 0;
+        $luckyNumbers       = Number::all()->count();
+        $prizes             = Raffle::whereNotNull('number')->count();
         return [
             'latestCustomers'   => $dbCustomers->take(5),
             'tableTitle'        => 'Últimos clientes cadastrados',
