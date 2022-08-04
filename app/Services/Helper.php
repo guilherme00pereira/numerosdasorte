@@ -52,4 +52,9 @@ class Helper
         }
         return $closest;
     }
+
+    public static function formatPhoneInternational( $number )
+    {
+        return "55" . preg_replace('/[^0-9]/', "", $number);
+    }
 }

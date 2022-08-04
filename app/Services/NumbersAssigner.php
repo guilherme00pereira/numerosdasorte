@@ -2,12 +2,11 @@
 
 namespace App\Services;
 
-
-use App\Models\Customer;
 use App\Models\Number;
 use App\Models\Order;
+use App\Models\Customer;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
+
 
 class NumbersAssigner
 {
@@ -66,6 +65,10 @@ class NumbersAssigner
                     'expiration' => Carbon::now()->addMonths($this->months)
                 ]);
             }
+           $customer = Customer::where('id', $this->orderData->customer_id)->first();
+           if( !is_null( $customer ) ) {
+                ZenviaHelper::getInstance()->jobToEnqueue( ZenviaClient::GENERATED_NUMBERS_TYPE, [ $customer->phone ], count( $numbers ) );
+           }
         }
     }
 

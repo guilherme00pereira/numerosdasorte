@@ -35,6 +35,12 @@ class RaffleManager
         $this->dbNumbers        = Number::where('expiration', '>', Carbon::now())->where('category_id', $this->category)->get();
         $this->intNumbers       = array_map(fn($value) => intval($value['number']), $this->dbNumbers->toArray() );
         $this->chosenNumber     = $this->checkWinnerIsNoDefaulter();
+        
+        $customer               = Customer::where('id', $this->chosenNumber->customer_id)->first();
+        if( !is_null( $customer ) ) {
+            ZenviaHelper::getInstance()->jobToEnqueue( ZenviaClient::DRAWN_NUMBER_TYPE, [ $customer->phone ] );
+        }
+        
         return $this->chosenNumber->id;
     }
 
@@ -54,6 +60,7 @@ class RaffleManager
             if( ( $key = array_search( $chosenNumber, $this->intNumbers ) ) ) {
                 unset( $this->intNumbers[$key] );
             }
+            ZenviaHelper::getInstance()->jobToEnqueue( ZenviaClient::DRAWN_DEFAULTER_TYPE, [ $customer->phone ] );
             return $this->checkWinnerIsNoDefaulter();
         } else {
             return $numberEntity;

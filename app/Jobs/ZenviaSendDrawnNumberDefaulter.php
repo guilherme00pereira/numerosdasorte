@@ -2,12 +2,15 @@
 
 namespace App\Jobs;
 
+use App\Models\ZenviaJob;
+use App\Services\ZenviaClient;
+use App\Services\ZenviaHelper;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class ZenviaSendDrawnNumberDefaulter implements ShouldQueue
 {
@@ -30,6 +33,13 @@ class ZenviaSendDrawnNumberDefaulter implements ShouldQueue
      */
     public function handle()
     {
-        //
+        try {
+            $jobs       = ZenviaJob::where('type', ZenviaClient::DRAWN_DEFAULTER_TYPE)->where('processed', false)->get();
+            $zenvia     = new ZenviaClient();
+            $content    = $zenvia->sendSMS( $jobs->type, ZenviaHelper::getInstance()->prepareSmsData( $jobs->data ) );
+            Log::info("SMS enviado [ Nova Conta ] - " . $content);
+        } catch (\Exception $e) {
+            Log::error("Erro ao enviar SMS [ Nova Conta ] - " . $e->getMessage() );
+        }
     }
 }

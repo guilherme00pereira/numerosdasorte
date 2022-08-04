@@ -2,12 +2,15 @@
 
 namespace App\Jobs;
 
+use App\Models\ZenviaJob;
+use App\Services\ZenviaClient;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
+use App\Services\ZenviaHelper;
 
 class ZenviaSendGeneratedNumbers implements ShouldQueue
 {
@@ -30,6 +33,13 @@ class ZenviaSendGeneratedNumbers implements ShouldQueue
      */
     public function handle()
     {
-        //
+        try {
+            $jobs       = ZenviaJob::where('type', ZenviaClient::GENERATED_NUMBERS_TYPE)->where('processed', false)->get();
+            $zenvia     = new ZenviaClient();
+            $content    = $zenvia->sendSMS( $jobs->type, ZenviaHelper::getInstance()->prepareSmsDataWithArgs( $jobs->data ) );
+            Log::info("SMS enviado [ Números Inseridos ] - " . $content);
+        } catch (\Exception $e) {
+            Log::error("Erro ao enviar SMS [ Números Inseridos ] - " . $e->getMessage() );
+        }
     }
 }

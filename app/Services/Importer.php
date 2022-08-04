@@ -4,15 +4,16 @@ namespace App\Services;
 
 use App\Models\Customer;
 use App\Models\Order;
-use App\Models\ZenviaJob;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Orchid\Platform\Models\Role;
 use Orchid\Platform\Models\User;
+use App\Services\ZenviaHelper;
 
 class Importer
 {
+
     private $file;
     private array $categories;
 
@@ -20,11 +21,11 @@ class Importer
     {
         $this->file             = $file;
         $this->categories       = $categories;
-        $this->zenviaCustomers  = [];
     }
 
     public function importCustomers()
     {
+        $customersPhones = [];
         try {
             $json = Storage::get($this->file);
             $importedCustomers = json_decode($json);
@@ -44,7 +45,7 @@ class Importer
                         $user->addRole($role);
                     }
 
-                    $this->newAccountToEnqueue( $customer->telefone );
+                    $customersPhones[] = Helper::formatPhoneInternational( $customer->telefone );
                     Customer::create([
                         'external_code' => $customer->id_cliente,
                         'user' => $user->id,
@@ -69,9 +70,10 @@ class Importer
                     $existingCustomer->save();
                 }
             }
+            ZenviaHelper::getInstance()->jobToEnqueue( ZenviaClient::NEW_ACCOUNT_TYPE, $customersPhones );
             Log::info("Importação dos clientes processada.");
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
+            Log::error("Erro importação de clientes: - " . $e->getMessage());
         }
     }
 
@@ -87,7 +89,7 @@ class Importer
             }
             Log::info("Importação dos pedidos processada.");
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
+            Log::error("Erro importação de pedidos: - " . $e->getMessage());
         }
     }
 
@@ -120,18 +122,6 @@ class Importer
             ]);
         } else {
             return $dbOrder;
-        }
-    }
-
-    private function newAccountToEnqueue( $phone )
-    {
-        $this->zenviaCustomers[] = $phone;
-        if( count( $this->zenviaCustomers ) == 100 ) {
-            ZenviaJob::create([
-                'type'  => ZenviaJob::NEW_ACCOUNT_TYPE,
-                'data'  => $this->zenviaCustomers
-            ]);
-            $this->zenviaCustomers = [];
         }
     }
 }
