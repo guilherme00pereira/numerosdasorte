@@ -70,7 +70,9 @@ class Importer
                     $existingCustomer->save();
                 }
             }
-            ZenviaHelper::getInstance()->jobToEnqueue( ZenviaClient::NEW_ACCOUNT_TYPE, $customersPhones );
+            if( count( $customersPhones ) > 0 ) {
+                ZenviaHelper::getInstance()->jobToEnqueue( ZenviaClient::NEW_ACCOUNT_TYPE, $customersPhones );
+            }
             Log::info("Importação dos clientes processada.");
         } catch (\Exception $e) {
             Log::error("Erro importação de clientes: - " . $e->getMessage());

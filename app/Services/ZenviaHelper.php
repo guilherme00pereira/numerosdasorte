@@ -57,7 +57,10 @@ class ZenviaHelper {
         foreach($chunks as $chunk) {
             ZenviaJob::create([
                 'type'  => $type,
-                'data'  => $chunk
+                'data'  => json_encode([ 
+                    'phone' => $chunk,
+                    'arg'   => $arg
+                ])
             ]);
         }
     }
