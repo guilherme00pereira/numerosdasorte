@@ -19,6 +19,7 @@ class PlatformProvider extends OrchidServiceProvider
     {
         parent::boot($dashboard);
         $dashboard->registerResource('stylesheets', '/css/app.css');
+        $dashboard->registerResource('scripts', '/js/app.js');
     }
 
     /**

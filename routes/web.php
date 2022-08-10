@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\CustomerController;
-use App\Orchid\Screens\Customers\CustomerDashboard;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,3 +17,4 @@ use Illuminate\Support\Facades\Route;
 
 // CUSTOMERS ROUTES
 Route::match(['get', 'post'], '/', [CustomerController::class, 'index'])->name('index');
+Route::get('/asyncGetImportStatus', [AjaxController::class, 'asyncGetImportStatus'])->name('asyncGetImportStatus');

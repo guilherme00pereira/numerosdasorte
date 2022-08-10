@@ -18,6 +18,7 @@ use Orchid\Support\Facades\Alert;
 
 class UploadFile extends Screen
 {
+    private $processing;
 
     const IMPORT_QUEUE_MESSAGE = "A importação foi iniciada e está sendo processada em segundo plano";
     /**
@@ -25,8 +26,14 @@ class UploadFile extends Screen
      *
      * @return array
      */
-    public function query(): iterable
+    public function query(Request $request): iterable
     {
+
+        if ($request->get('processing')) {
+            $this->processing = true;
+        } else {
+            $this->processing = false;
+        }
         return [];
     }
 
@@ -67,68 +74,62 @@ class UploadFile extends Screen
      */
     public function layout(): iterable
     {
-        return [
-                Layout::rows([
-                    Group::make([
-                        Input::make('import_orders')
-                            ->type('file')
-                            ->title('Importar Pedidos')
-                            ->vertical(),
-                        Select::make('raffle_category')
-                            ->multiple()
-                            ->title('Vincular Categoria')
-                            ->fromModel(RaffleCategory::class, 'name')
-                            ->vertical(),
-                        Button::make('Importar')->method('handleOrdersFileUpload')->type(Color::PRIMARY()),
-                    ])
-                ]),
-                Layout::rows([
-                    Group::make([
-                        Input::make('import_customers')
-                            ->type('file')
-                            ->title('Importar Cliente')
-                            ->vertical(),
-                        Button::make('Importar')
-                            ->method('handleCustomerFileUpload')
-                            ->type(Color::PRIMARY())
-                            ->parameters([
-                                'id'            => 123,
-                                'data-action' => 'click->importer#importCustomers'
-                            ]),
-                    ])
+        $layout = [
+            Layout::rows([
+                Group::make([
+                    Input::make('import_orders')
+                        ->type('file')
+                        ->title('Importar Pedidos')
+                        ->vertical(),
+                    Select::make('raffle_category')
+                        ->multiple()
+                        ->title('Vincular Categoria')
+                        ->fromModel(RaffleCategory::class, 'name')
+                        ->vertical(),
+                    Button::make('Importar')->method('handleOrdersFileUpload')->type(Color::PRIMARY()),
                 ])
+            ]),
+            Layout::rows([
+                Group::make([
+                    Input::make('import_customers')
+                        ->type('file')
+                        ->title('Importar Cliente')
+                        ->vertical(),
+                    Button::make('Importar')
+                        ->method('handleCustomerFileUpload')
+                        ->type(Color::PRIMARY()),
+                ])
+            ])
         ];
+        if ($this->processing) {
+            $layout[] = Layout::view('layout.status');
+        }
+        return $layout;
     }
 
-    public function handleOrdersFileUpload(Request $request): void
+    public function handleOrdersFileUpload(Request $request)
     {
-        $uploaded   = $request->file("import_orders");
-        $categories = $request->get("raffle_category");
-        if ($this->verifyUploadedFile($uploaded) && $this->verifyRaffle($categories)) {
+        $uploaded           = $request->file("import_orders");
+        $this->categories   = $request->get("raffle_category");
+        if ($this->verifyUploadedFile($uploaded) && $this->verifyRaffle()) {
             try {
-                $savedFile = $request->file("import_orders")->store('imported');
-                //ProcessImportOrders::dispatch( $savedFile, $categories );
-                //Alert::success(self::IMPORT_QUEUE_MESSAGE);
-                $importer = new Importer($savedFile, $categories);
-                $importer->importOrders();
-                Alert::success("Importação dos pedidos realizada com sucesso!");
+                session('importedFile', $request->file("import_orders")->store('imported'));
+                Alert::success("Importação dos pedidos iniciada.");
+                return redirect()->to('/admin/importar-dados?processing=true&type=orders');
             } catch (\Exception $e) {
                 Alert::error("Erro ao processar o arquivo: " . $e->getMessage());
             }
         }
     }
 
-    public function handleCustomerFileUpload(Request $request): void
+    public function handleCustomerFileUpload(Request $request)
     {
         $uploaded = $request->file("import_customers");
         if ($this->verifyUploadedFile($uploaded)) {
             try {
-                $savedFile = $request->file("import_customers")->store('imported');
-//                ProcessImportCustomers::dispatch( $savedFile );
-//                Alert::success(self::IMPORT_QUEUE_MESSAGE);
-                $importer = new Importer($savedFile);
-                $importer->importCustomers();
-                Alert::success("Importação dos clientes realizada com sucesso!");
+                session('importedFile', $request->file("import_customers")->store('imported'));
+                Alert::success("Importação dos clientes iniciada.");
+                return redirect()->to('/admin/importar-dados?processing=true&type=customers');
             } catch (\Exception $e) {
                 Alert::error("Erro ao processar o arquivo: " . $e->getMessage());
             }
@@ -148,9 +149,9 @@ class UploadFile extends Screen
         return true;
     }
 
-    private function verifyRaffle($categories): bool
+    private function verifyRaffle(): bool
     {
-        if (is_null($categories)) {
+        if (is_null($this->categories)) {
             Alert::error("Selecione ao menos uma categoria de sorteio para vincular aos pedidos!");
             return false;
         }
