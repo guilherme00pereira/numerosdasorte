@@ -30,7 +30,7 @@ class UploadFile extends Screen
     {
 
         if ($request->get('processing')) {
-            $this->processing = true;
+            $this->processing = !is_null( session('importedFile') );
         } else {
             $this->processing = false;
         }
@@ -97,7 +97,8 @@ class UploadFile extends Screen
                         ->vertical(),
                     Button::make('Importar')
                         ->method('handleCustomerFileUpload')
-                        ->type(Color::PRIMARY()),
+                        ->type(Color::PRIMARY())
+                        ->set('data-type', 'customer'),
                 ])
             ])
         ];
@@ -110,11 +111,10 @@ class UploadFile extends Screen
     public function handleOrdersFileUpload(Request $request)
     {
         $uploaded           = $request->file("import_orders");
-        $this->categories   = $request->get("raffle_category");
         if ($this->verifyUploadedFile($uploaded) && $this->verifyRaffle()) {
             try {
-                session('importedFile', $request->file("import_orders")->store('imported'));
-                Alert::success("Importação dos pedidos iniciada.");
+                session( ['importedFile' => $request->file("import_orders")->store('imported') ]);
+                session([ 'importedCategory' => $request->get("raffle_category") ]);
                 return redirect()->to('/admin/importar-dados?processing=true&type=orders');
             } catch (\Exception $e) {
                 Alert::error("Erro ao processar o arquivo: " . $e->getMessage());
@@ -127,8 +127,7 @@ class UploadFile extends Screen
         $uploaded = $request->file("import_customers");
         if ($this->verifyUploadedFile($uploaded)) {
             try {
-                session('importedFile', $request->file("import_customers")->store('imported'));
-                Alert::success("Importação dos clientes iniciada.");
+                session([ 'importedFile' => $request->file("import_customers")->store('imported') ]);
                 return redirect()->to('/admin/importar-dados?processing=true&type=customers');
             } catch (\Exception $e) {
                 Alert::error("Erro ao processar o arquivo: " . $e->getMessage());

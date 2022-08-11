@@ -2169,11 +2169,31 @@ __webpack_require__.r(__webpack_exports__);
 
 
 application.register("importer", _controllers_importer__WEBPACK_IMPORTED_MODULE_1__["default"]);
-document.addEventListener("turbo:submit-start", function (event) {
-  //event.preventDefault();
-  if (window.location.href.indexOf('importar-dados') > -1) {
-    var loadingElem = document.getElementById('#processingImportLoading');
+document.addEventListener("turbo:load", function (event) {
+  if (window.location.href.indexOf('importar-dados?processing') > -1) {
+    var loadingElem = document.getElementById('processingImportLoading');
+    loadingElem.classList.add('d-flex');
     loadingElem.style.display = "block";
+    var urlParams = new URLSearchParams(window.location.search);
+    var type = urlParams.get('type');
+
+    if ('customers' === type) {
+      fetch('http://' + window.location.host + '/asyncRunImportCustomers').then(function (response) {
+        return response.json;
+      }).then(function (data) {
+        console.log(data);
+        loadingElem.style.display = "none";
+      });
+    }
+
+    if ('orders' === type) {
+      fetch('http://' + window.location.host + '/asyncRunImportOrders').then(function (response) {
+        return response.json;
+      }).then(function (data) {
+        console.log(data);
+        loadingElem.style.display = "none";
+      });
+    }
   }
 });
 

@@ -18,3 +18,5 @@ use Illuminate\Support\Facades\Route;
 // CUSTOMERS ROUTES
 Route::match(['get', 'post'], '/', [CustomerController::class, 'index'])->name('index');
 Route::get('/asyncGetImportStatus', [AjaxController::class, 'asyncGetImportStatus'])->name('asyncGetImportStatus');
+Route::get('/asyncRunImportCustomers', [AjaxController::class, 'asyncRunImportCustomers'])->name('asyncRunImportCustomers');
+Route::get('/asyncRunImportOrders', [AjaxController::class, 'asyncRunImportOrders'])->name('asyncRunImportOrders');
