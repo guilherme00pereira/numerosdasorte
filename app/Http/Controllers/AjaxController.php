@@ -11,7 +11,7 @@ class AjaxController extends Controller
     {
         return [
             'complete' => true,
-            'html' => "processado com sucesso"
+            'html' => session("importStatus")
         ];
     }
 

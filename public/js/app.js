@@ -2172,6 +2172,7 @@ application.register("importer", _controllers_importer__WEBPACK_IMPORTED_MODULE_
 document.addEventListener("turbo:load", function (event) {
   if (window.location.href.indexOf('importar-dados?processing') > -1) {
     var loadingElem = document.getElementById('processingImportLoading');
+    var statusElem = document.getElementById('statusImportBox');
     loadingElem.classList.add('d-flex');
     loadingElem.style.display = "block";
     var urlParams = new URLSearchParams(window.location.search);
@@ -2179,9 +2180,18 @@ document.addEventListener("turbo:load", function (event) {
 
     if ('customers' === type) {
       fetch('http://' + window.location.host + '/asyncRunImportCustomers').then(function (response) {
-        return response.json;
+        return response.json();
       }).then(function (data) {
         console.log(data);
+
+        if (data.success) {
+          statusElem.classList.remove('alert-info');
+          statusElem.classList.add('alert-success');
+        } else {
+          statusElem.classList.remove('alert-info');
+          statusElem.classList.add('alert-danger');
+        }
+
         loadingElem.style.display = "none";
       });
     }

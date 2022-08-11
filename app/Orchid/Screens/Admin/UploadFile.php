@@ -97,8 +97,7 @@ class UploadFile extends Screen
                         ->vertical(),
                     Button::make('Importar')
                         ->method('handleCustomerFileUpload')
-                        ->type(Color::PRIMARY())
-                        ->set('data-type', 'customer'),
+                        ->type(Color::PRIMARY()),
                 ])
             ])
         ];
