@@ -7,13 +7,13 @@ use Illuminate\Http\Request;
 
 class AjaxController extends Controller
 {
-    public function asyncGetImportStatus(Request $request)
+    public function asyncGetImportStatus(Request $request): array
     {
-        $status     = session("importStatus");
+        $html       = file_get_contents(storage_path('logs/import.log'));
         $complete   = session("importComplete");
         return [
-            'complete' => $complete,
-            'html' => $status
+            'complete'  => $complete,
+            'html'      => $html
         ];
     }
 

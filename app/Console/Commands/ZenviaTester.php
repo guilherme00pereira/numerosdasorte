@@ -15,14 +15,14 @@ class ZenviaTester extends Command
      *
      * @var string
      */
-    protected $signature = 'zenvia:test';
+    protected $signature = 'zenvia:send';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Test Zenvia send SMS';
+    protected $description = 'Zenvia send SMS';
 
     /**
      * Execute the console command.
@@ -31,7 +31,7 @@ class ZenviaTester extends Command
      */
     public function handle()
     {
-        $jobs  = ZenviaJob::where('type', ZenviaClient::NEW_ACCOUNT_TYPE)->where('processed', false)->get();
+        $jobs  = ZenviaJob::where('processed', false)->get();
         Log::alert( json_decode($jobs[0]->data)->phone );
         return 0;
     }

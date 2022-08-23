@@ -2,8 +2,9 @@
 
 namespace App\Orchid\Screens\Admin;
 
+use App\Jobs\ProcessImportCustomers;
+use App\Jobs\ProcessImportOrders;
 use App\Models\RaffleCategory;
-use App\Services\Importer;
 use Illuminate\Support\Facades\Storage;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
@@ -30,7 +31,7 @@ class UploadFile extends Screen
     {
 
         if ($request->get('processing')) {
-            $this->processing = !is_null( session('importedFile') );
+            $this->processing = true;
         } else {
             $this->processing = false;
         }
@@ -112,9 +113,8 @@ class UploadFile extends Screen
         $uploaded           = $request->file("import_orders");
         if ($this->verifyUploadedFile($uploaded) && $this->verifyRaffle()) {
             try {
-                session( ['importedFile' => $request->file("import_orders")->store('imported') ]);
-                session([ 'importedCategory' => $request->get("raffle_category") ]);
-                return redirect()->to('/admin/importar-dados?processing=true&type=orders');
+                ProcessImportOrders::dispatch($uploaded->store('imported'), $request->get("raffle_category"));
+                return redirect()->to('/admin/importar-dados?processing=true');
             } catch (\Exception $e) {
                 Alert::error("Erro ao processar o arquivo: " . $e->getMessage());
             }
@@ -126,8 +126,8 @@ class UploadFile extends Screen
         $uploaded = $request->file("import_customers");
         if ($this->verifyUploadedFile($uploaded)) {
             try {
-                session([ 'importedFile' => $request->file("import_customers")->store('imported') ]);
-                return redirect()->to('/admin/importar-dados?processing=true&type=customers');
+                ProcessImportCustomers::dispatch($uploaded->store('imported'));
+                return redirect()->to('/admin/importar-dados?processing=true');
             } catch (\Exception $e) {
                 Alert::error("Erro ao processar o arquivo: " . $e->getMessage());
             }

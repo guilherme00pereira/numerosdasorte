@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\ZenviaSendNewAccount;
 use App\Models\Customer;
 use App\Models\Order;
 use Illuminate\Support\Facades\Hash;
@@ -23,7 +24,7 @@ class Importer
         $this->categories       = $categories;
     }
 
-    public function importCustomers()
+    public function importCustomers(): void
     {
         session( [ 'importComplete' => false ] );
         $customersPhones = [];
@@ -32,7 +33,7 @@ class Importer
             $importedCustomers = json_decode($json);
             $role = Role::where('slug', 'cliente')->first();
             foreach ($importedCustomers as $key => $customer) {
-                session( [ "importStatus" => "importando " . ($key + 1) . " de " . count( $importedCustomers ) . " clientes"] );
+                Log::channel("import")->info( "importando " . ($key + 1) . " de " . count( $importedCustomers ) . " clientes" );
                 $existingCustomer = Customer::where('external_code', $customer->id_cliente)->first();
                 if (is_null($existingCustomer)) {
                     $checkedMail = $this->checkEmail($customer->email, $customer->id_cliente);
@@ -75,10 +76,10 @@ class Importer
             if( count( $customersPhones ) > 0 ) {
                 ZenviaHelper::getInstance()->jobToEnqueue( ZenviaClient::NEW_ACCOUNT_TYPE, $customersPhones );
             }
-            session( [ "importStatus" => "Importação dos clientes processada." ] );
+            Log::channel("import")->info( "Importação dos clientes processada." );
             Log::info("Importação dos clientes processada.");
         } catch (\Exception $e) {
-            session(["importStatus" => "ocorreu um erro ao importar os clientes"]);
+            Log::channel("import")->info( "ocorreu um erro ao importar os clientes: " . $e->getMessage() );
             Log::error("Erro importação de clientes: - " . $e->getMessage());
         } finally {
             session( [ 'importComplete' => true ] );
