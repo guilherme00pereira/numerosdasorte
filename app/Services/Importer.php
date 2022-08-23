@@ -25,13 +25,14 @@ class Importer
 
     public function importCustomers()
     {
+        session( [ 'importComplete' => false ] );
         $customersPhones = [];
         try {
             $json = Storage::get($this->file);
             $importedCustomers = json_decode($json);
             $role = Role::where('slug', 'cliente')->first();
             foreach ($importedCustomers as $key => $customer) {
-                session(["importStatus", "importando " . $key . " de " . count($importedCustomers) . " clientes"]);
+                session( [ "importStatus" => "importando " . ($key + 1) . " de " . count( $importedCustomers ) . " clientes"] );
                 $existingCustomer = Customer::where('external_code', $customer->id_cliente)->first();
                 if (is_null($existingCustomer)) {
                     $checkedMail = $this->checkEmail($customer->email, $customer->id_cliente);
@@ -74,23 +75,27 @@ class Importer
             if( count( $customersPhones ) > 0 ) {
                 ZenviaHelper::getInstance()->jobToEnqueue( ZenviaClient::NEW_ACCOUNT_TYPE, $customersPhones );
             }
-            session(["importStatus", "importados " . count($importedCustomers) . " clientes"]);
+            session( [ "importStatus" => "Importação dos clientes processada." ] );
             Log::info("Importação dos clientes processada.");
         } catch (\Exception $e) {
-            session(["importStatus", "ocorreu um erro ao importar os clientes"]);
+            session(["importStatus" => "ocorreu um erro ao importar os clientes"]);
             Log::error("Erro importação de clientes: - " . $e->getMessage());
+        } finally {
+            session( [ 'importComplete' => true ] );
         }
     }
 
-    public function importOrders()
+    public function importOrders(): void
     {
         try {
             $json = Storage::get($this->file);
             $importedOrders = json_decode($json);
             foreach ($importedOrders as $order) {
                 $newOrder = $this->saveOrder( $order );
-                $assigner = new NumbersAssigner( $newOrder );
-                $assigner->setCategories( $this->categories )->process();
+                if( !is_null( $newOrder ) ) {
+                    $assigner = new NumbersAssigner($newOrder);
+                    $assigner->setCategories($this->categories)->process();
+                }
             }
             Log::info("Importação dos pedidos processada.");
         } catch (\Exception $e) {
@@ -126,7 +131,7 @@ class Importer
                 'customer_id' => $customer->id
             ]);
         } else {
-            return $dbOrder;
+            return null;
         }
     }
 }

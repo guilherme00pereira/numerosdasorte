@@ -12,27 +12,38 @@ document.addEventListener("turbo:load", (event) => {
         const urlParams = new URLSearchParams(window.location.search);
         const type = urlParams.get('type');
         if('customers' === type) {
-            fetch('http://' + window.location.host + '/asyncRunImportCustomers')
-            .then(response => { 
-                return response.json()
-            }).then(data => {
-                console.log(data)
+            fetchCustomers().then(data => {
                 if(data.success) {
                     statusElem.classList.remove('alert-info')
                     statusElem.classList.add('alert-success')
+                    statusElem.innerText = "Importação concluída com sucesso!"
                 } else {
                     statusElem.classList.remove('alert-info')
                     statusElem.classList.add('alert-danger')
+                    statusElem.innerText = "Erro ao realizar a importação!"
                 }
+                loadingElem.classList.remove('d-flex');
                 loadingElem.style.display = "none";
             })
         }
         if('orders' === type) {
-            fetch('http://' + window.location.host + '/asyncRunImportOrders').then(response => response.json).then(data => {
+            fetchOrders().then(data => {
                 console.log(data)
                 loadingElem.style.display = "none";
             })
         }
     }
 })
+
+async function fetchCustomers() {
+    const response = await fetch('http://' + window.location.host + '/asyncRunImportCustomers');
+    const json = await response.json();
+    return json;
+}
+
+async function fetchOrders() {
+    const response = await fetch('http://' + window.location.host + '/asyncRunImportOrders');
+    const json = await response.json();
+    return json;
+}
 

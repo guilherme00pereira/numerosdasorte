@@ -14,16 +14,18 @@ export default class extends window.Controller {
     }
 
     load() {
-        fetch(this.urlValue)
-            .then(response => {
-                return response.json()
-            })
-            .then(data => {
-                if(data.complete) {
-                    this.stopRefreshing()
-                }
-                this.element.innerHTML = data.html
-            })
+        this.fetchData().then(data => {
+            if(data.complete) {
+                this.stopRefreshing()
+            }
+            this.element.innerHTML = data.html
+        })
+    }
+
+    async fetchData() {
+        const response = await fetch(this.urlValue)
+        const json = await response.json()
+        return json
     }
 
     startRefreshing() {
