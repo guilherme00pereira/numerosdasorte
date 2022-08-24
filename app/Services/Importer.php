@@ -33,7 +33,7 @@ class Importer
             $importedCustomers = json_decode($json);
             $role = Role::where('slug', 'cliente')->first();
             foreach ($importedCustomers as $key => $customer) {
-                Log::channel("import")->info( "importando " . ($key + 1) . " de " . count( $importedCustomers ) . " clientes" );
+                Log::channel("import")->info( "importando " . ($key + 1) . " de " . count( $importedCustomers ) . " clientes" . PHP_EOL );
                 $existingCustomer = Customer::where('external_code', $customer->id_cliente)->first();
                 if (is_null($existingCustomer)) {
                     $checkedMail = $this->checkEmail($customer->email, $customer->id_cliente);
@@ -76,10 +76,10 @@ class Importer
             if( count( $customersPhones ) > 0 ) {
                 ZenviaHelper::getInstance()->jobToEnqueue( ZenviaClient::NEW_ACCOUNT_TYPE, $customersPhones );
             }
-            Log::channel("import")->info( "Importação dos clientes processada." );
+            Log::channel("import")->info( "Importação dos clientes processada." . PHP_EOL);
             Log::info("Importação dos clientes processada.");
         } catch (\Exception $e) {
-            Log::channel("import")->info( "ocorreu um erro ao importar os clientes: " . $e->getMessage() );
+            Log::channel("import")->info( "ocorreu um erro ao importar os clientes: " . $e->getMessage() . PHP_EOL);
             Log::error("Erro importação de clientes: - " . $e->getMessage());
         } finally {
             session( [ 'importComplete' => true ] );
@@ -91,7 +91,8 @@ class Importer
         try {
             $json = Storage::get($this->file);
             $importedOrders = json_decode($json);
-            foreach ($importedOrders as $order) {
+            foreach ($importedOrders as $key => $order) {
+                Log::channel("import")->info( "importando " . ($key + 1) . " de " . count( $importedOrders ) . " pedidos" . PHP_EOL );
                 $newOrder = $this->saveOrder( $order );
                 if( !is_null( $newOrder ) ) {
                     $assigner = new NumbersAssigner($newOrder);

@@ -110,6 +110,7 @@ class UploadFile extends Screen
 
     public function handleOrdersFileUpload(Request $request)
     {
+        set_time_limit(0);
         $uploaded           = $request->file("import_orders");
         if ($this->verifyUploadedFile($uploaded) && $this->verifyRaffle()) {
             try {
@@ -123,6 +124,7 @@ class UploadFile extends Screen
 
     public function handleCustomerFileUpload(Request $request)
     {
+        set_time_limit(0);
         $uploaded = $request->file("import_customers");
         if ($this->verifyUploadedFile($uploaded)) {
             try {

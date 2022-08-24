@@ -9,7 +9,11 @@ class AjaxController extends Controller
 {
     public function asyncGetImportStatus(Request $request): array
     {
-        $html       = file_get_contents(storage_path('logs/import.log'));
+        $file = storage_path('logs/import.log');
+        if(!file_exists($file)) {
+            file_put_contents($file, "");
+        }
+        $html       = file_get_contents($file);
         $complete   = session("importComplete");
         return [
             'complete'  => $complete,

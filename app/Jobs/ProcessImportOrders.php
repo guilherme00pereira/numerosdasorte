@@ -41,12 +41,12 @@ class ProcessImportOrders implements ShouldQueue
     {
         try {
 
-            Log::channel("import")->info("Iniciando importação dos clientes");
+            Log::channel("import")->info("Iniciando importação dos clientes". PHP_EOL);
             $importer = new Importer($this->file, $this->categories);
             $importer->importOrders();
             Log::info("Importação dos pedidos processada.");
         } catch (\Exception $e) {
-            Log::channel("import")->info( "Erro ao importar pedidos: " . $e->getMessage() );
+            Log::channel("import")->info( "Erro ao importar pedidos: " . $e->getMessage() . PHP_EOL);
             Log::error($e->getMessage());
         }
     }
