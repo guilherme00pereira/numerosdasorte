@@ -27,12 +27,12 @@ class ZenviaHelper {
     public function prepareSmsData( $data ): array
     {
         $items  = [];
-        $rows = json_decode( $data );
-        foreach( $rows as $row)
+        $sendData = json_decode( $data );
+        foreach( $sendData->phones as $phone)
         {
-            $items[] = [
+            $items[] = (object)[
                 'arg'   => null,
-                'phone' => $row->phone,
+                'phone' => $phone,
             ];
         }
         return $items;
@@ -41,12 +41,12 @@ class ZenviaHelper {
     public function prepareSmsDataWithArgs( $data ): array
     {
         $items  = [];
-        $rows = json_decode( $data );
-        foreach( $rows as $row)
+        $sendData = json_decode( $data );
+        foreach( $sendData->phones as $phone)
         {
             $items[] = [
-                'arg'   => $row->arg,
-                'phone' => $row->phone,
+                'arg'   => $sendData->arg,
+                'phone' => $phone,
             ];
         }
         return $items;
@@ -59,7 +59,7 @@ class ZenviaHelper {
             ZenviaJob::create([
                 'type'  => $type,
                 'data'  => json_encode([
-                    'phone' => $chunk,
+                    'phones' => $chunk,
                     'arg'   => $arg
                 ])
             ]);

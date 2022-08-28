@@ -5,6 +5,10 @@ namespace App\Orchid\Screens\Admin;
 use App\Jobs\ProcessImportCustomers;
 use App\Jobs\ProcessImportOrders;
 use App\Models\RaffleCategory;
+use App\Models\ZenviaJob;
+use App\Services\ZenviaClient;
+use App\Services\ZenviaHelper;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
@@ -65,7 +69,9 @@ class UploadFile extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            //Button::make('Salvar')->method('Proc')->type(Color::PRIMARY()),
+        ];
     }
 
     /**
@@ -166,4 +172,20 @@ class UploadFile extends Screen
         $files = Storage::allFiles("imported");
         Storage::delete($files);
     }
+
+//    public function Proc()
+//    {
+//        try {
+//            $jobs = ZenviaJob::where('type', ZenviaClient::NEW_ACCOUNT_TYPE)->where('processed', false)->get();
+//            $zenvia = new ZenviaClient();
+//            foreach ($jobs as $job) {
+//                $content = $zenvia->sendSMS($job->type, ZenviaHelper::getInstance()->prepareSmsData($job->data));
+//                Log::info("SMS enviado [ Nova Conta ] - " . $content);
+//                $job->processed = true;
+//                $job->save();
+//            }
+//        } catch (\Exception $e) {
+//            Log::error("Erro ao enviar SMS [ Nova Conta ] - " . $e->getMessage() );
+//        }
+//    }
 }

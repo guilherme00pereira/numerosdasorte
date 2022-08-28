@@ -37,7 +37,7 @@ class ZenviaSendDrawnNumberDefaulter implements ShouldQueue
             $jobs       = ZenviaJob::where('type', ZenviaClient::DRAWN_DEFAULTER_TYPE)->where('processed', false)->get();
             $zenvia     = new ZenviaClient();
             foreach ($jobs as $job) {
-                $content    = $zenvia->sendSMS( $job->type, ZenviaHelper::getInstance()->prepareSmsData( $jobs->data ) );
+                $content    = $zenvia->sendSMS( $job->type, ZenviaHelper::getInstance()->prepareSmsData( $job->data ) );
                 Log::info("SMS enviado [ Nova Conta ] - " . $content);
                 $job->processed = true;
                 $job->save();

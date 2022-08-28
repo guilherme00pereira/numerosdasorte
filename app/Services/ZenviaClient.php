@@ -31,7 +31,10 @@ class ZenviaClient
         ]);
     }
 
-    public function sendSMS( $type, $items )
+    /**
+     * @throws Exception
+     */
+    public function sendSMS($type, $items ): string
     {
         $url = 'send-sms-multiple';
         try {
@@ -44,7 +47,7 @@ class ZenviaClient
         }
     }
 
-    private function formatSmsData( $type, $items )
+    private function formatSmsData( $type, $items ): bool|string
     {
         $messages = [];
         foreach ( $items as $item ) {
@@ -62,7 +65,7 @@ class ZenviaClient
         ]);
     }
 
-    private function getTextByType( $type, $arg )
+    private function getTextByType( $type, $arg ): string
     {
         if ($type == self::NEW_ACCOUNT_TYPE) {
             return "Olá, sua conta foi criada no BR Vita Prêmios!

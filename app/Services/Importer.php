@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Jobs\ZenviaSendNewAccount;
 use App\Models\Customer;
 use App\Models\Order;
 use Illuminate\Support\Facades\Hash;
@@ -10,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Orchid\Platform\Models\Role;
 use Orchid\Platform\Models\User;
-use App\Services\ZenviaHelper;
+
 
 class Importer
 {
@@ -33,7 +32,7 @@ class Importer
             $importedCustomers = json_decode($json);
             $role = Role::where('slug', 'cliente')->first();
             foreach ($importedCustomers as $key => $customer) {
-                Log::channel("import")->info( "importando " . ($key + 1) . " de " . count( $importedCustomers ) . " clientes" . PHP_EOL );
+                Log::channel("import")->info( "importando " . (intval($key) + 1) . " de " . count( $importedCustomers ) . " clientes" );
                 $existingCustomer = Customer::where('external_code', $customer->id_cliente)->first();
                 if (is_null($existingCustomer)) {
                     $checkedMail = $this->checkEmail($customer->email, $customer->id_cliente);
@@ -76,10 +75,10 @@ class Importer
             if( count( $customersPhones ) > 0 ) {
                 ZenviaHelper::getInstance()->jobToEnqueue( ZenviaClient::NEW_ACCOUNT_TYPE, $customersPhones );
             }
-            Log::channel("import")->info( "Importação dos clientes processada." . PHP_EOL);
+            Log::channel("import")->info( "Importação dos clientes processada." );
             Log::info("Importação dos clientes processada.");
         } catch (\Exception $e) {
-            Log::channel("import")->info( "ocorreu um erro ao importar os clientes: " . $e->getMessage() . PHP_EOL);
+            Log::channel("import")->info( "ocorreu um erro ao importar os clientes: " . $e->getMessage() );
             Log::error("Erro importação de clientes: - " . $e->getMessage());
         } finally {
             session( [ 'importComplete' => true ] );
@@ -91,8 +90,7 @@ class Importer
         try {
             $json = Storage::get($this->file);
             $importedOrders = json_decode($json);
-            foreach ($importedOrders as $key => $order) {
-                Log::channel("import")->info( "importando " . ($key + 1) . " de " . count( $importedOrders ) . " pedidos" . PHP_EOL );
+            foreach ($importedOrders as $order) {
                 $newOrder = $this->saveOrder( $order );
                 if( !is_null( $newOrder ) ) {
                     $assigner = new NumbersAssigner($newOrder);
