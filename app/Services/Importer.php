@@ -30,9 +30,10 @@ class Importer
         try {
             $json = Storage::get($this->file);
             $importedCustomers = json_decode($json);
+            $total = $this->checkImporterdData($importedCustomers);
             $role = Role::where('slug', 'cliente')->first();
             foreach ($importedCustomers as $key => $customer) {
-                Log::channel("import")->info( "importando " . (intval($key) + 1) . " de " . count( $importedCustomers ) . " clientes" );
+                Log::channel("import")->info( "importando " . (intval($key) + 1) . " de " . $total . " clientes" );
                 $existingCustomer = Customer::where('external_code', $customer->id_cliente)->first();
                 if (is_null($existingCustomer)) {
                     $checkedMail = $this->checkEmail($customer->email, $customer->id_cliente);
@@ -90,7 +91,9 @@ class Importer
         try {
             $json = Storage::get($this->file);
             $importedOrders = json_decode($json);
-            foreach ($importedOrders as $order) {
+            $total = $this->checkImporterdData($importedOrders);
+            foreach ($importedOrders as $key => $order) {
+                Log::channel("import")->info( "importando " . (intval($key) + 1) . " de " . $total . " pedidos" );
                 $newOrder = $this->saveOrder( $order );
                 if( !is_null( $newOrder ) ) {
                     $assigner = new NumbersAssigner($newOrder);
@@ -133,5 +136,20 @@ class Importer
         } else {
             return null;
         }
+    }
+
+    /**
+     * @param mixed $importedCustomers
+     * @return int
+     */
+    private function checkImporterdData(mixed $importedCustomers): int
+    {
+        $total = 0;
+        if (is_object($importedCustomers)) {
+            $total = 1;
+        } else {
+            $total = count($importedCustomers);
+        }
+        return $total;
     }
 }

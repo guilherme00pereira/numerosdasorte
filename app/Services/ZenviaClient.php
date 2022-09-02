@@ -20,10 +20,11 @@ class ZenviaClient
     public function __construct()
     {
         $this->client   = new Client([
-            'base_uri'          => 'https://api-rest.zenvia.com/services/',
+            'base_uri'          => 'https://api.zenvia.com/v2/',
             'headers'       => [
                 'Accept'        		=> 'application/json',
-                'Authorization' 		=> 'Basic ' . base64_encode("atom.rest:#Tom!brvit@2021"),
+                //'Authorization' 		=> 'Basic ' . base64_encode("atom.rest:#Tom!brvit@2021"),
+                'X-API-TONEK'           => 'lqphCkQFDtLQe2VsD7xzLFnkikkIleChFRvp',
                 'Content-Type'  		=> 'application/json',
                 'Cache-Control'         => 'no-cache'
                 //'verify' => false
@@ -36,7 +37,7 @@ class ZenviaClient
      */
     public function sendSMS($type, $items ): string
     {
-        $url = 'send-sms-multiple';
+        $url = 'channels/sms/messages';
         try {
             $response = $this->client->request( 'POST', $url, [
                 'json'  => $this->formatSmsData( $type, $items )
@@ -54,7 +55,7 @@ class ZenviaClient
             $message[] = [
                 "from"      => "BR Vita Premios",
                 "to"        => $item->phone,
-                "msg"       => $this->getTextByType( $type, $item->arg )
+                "content"       => $this->getTextByType( $type, $item->arg )
             ];
             $messages[] = $message;
         }
