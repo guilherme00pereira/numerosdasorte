@@ -71,7 +71,7 @@ return [
         ],
 
         'import' => [
-            'driver' => 'import',
+            'driver' => 'daily',
             'path' => 'storage_path'('logs/import.log'),
             'level' => env('LOG_LEVEL', 'debug'),
         ],

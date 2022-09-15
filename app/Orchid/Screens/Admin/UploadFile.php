@@ -26,6 +26,8 @@ class UploadFile extends Screen
     private $processing;
 
     const IMPORT_QUEUE_MESSAGE = "A importação foi iniciada e está sendo processada em segundo plano";
+    private mixed $categories;
+
     /**
      * Query data.
      *
@@ -118,9 +120,10 @@ class UploadFile extends Screen
     {
         set_time_limit(0);
         $uploaded           = $request->file("import_orders");
+        $this->categories  = $request->get("raffle_category");
         if ($this->verifyUploadedFile($uploaded) && $this->verifyRaffle()) {
             try {
-                ProcessImportOrders::dispatch($uploaded->store('imported'), $request->get("raffle_category"));
+                ProcessImportOrders::dispatch($uploaded->store('imported'), $this->categories);
                 return redirect()->to('/admin/importar-dados?processing=true');
             } catch (\Exception $e) {
                 Alert::error("Erro ao processar o arquivo: " . $e->getMessage());
@@ -179,8 +182,7 @@ class UploadFile extends Screen
 //            $jobs = ZenviaJob::where('type', ZenviaClient::NEW_ACCOUNT_TYPE)->where('processed', false)->get();
 //            $zenvia = new ZenviaClient();
 //            foreach ($jobs as $job) {
-//                $content = $zenvia->sendSMS($job->type, ZenviaHelper::getInstance()->prepareSmsData($job->data));
-//                Log::info("SMS enviado [ Nova Conta ] - " . $content);
+//                $zenvia->sendSMS($job->type, ZenviaHelper::getInstance()->prepareSmsData($job->data));
 //                $job->processed = true;
 //                $job->save();
 //            }

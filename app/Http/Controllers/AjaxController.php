@@ -9,7 +9,7 @@ class AjaxController extends Controller
 {
     public function asyncGetImportStatus(Request $request): array
     {
-        $file = storage_path('logs/import.log');
+        $file = storage_path('logs/import-' . date('Y-m-d') . '.log');
         if(!file_exists($file)) {
             file_put_contents($file, "");
         }

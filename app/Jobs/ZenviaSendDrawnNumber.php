@@ -37,13 +37,12 @@ class ZenviaSendDrawnNumber implements ShouldQueue
             $jobs       = ZenviaJob::where('type', ZenviaClient::DRAWN_NUMBER_TYPE)->where('processed', false)->get();
             $zenvia     = new ZenviaClient();
             foreach ($jobs as $job) {
-                $content    = $zenvia->sendSMS( $job->type, ZenviaHelper::getInstance()->prepareSmsData( $job->data ) );
-                Log::info("SMS enviado [ Nova Conta ] - " . $content);
+                $zenvia->sendSMS( $job->type, ZenviaHelper::getInstance()->prepareSmsData( $job->data ) );
                 $job->processed = true;
                 $job->save();
             }
         } catch (\Exception $e) {
-            Log::error("Erro ao enviar SMS [ Nova Conta ] - " . $e->getMessage() );
+            Log::error("Erro ao enviar SMS [ Número sorteado ] - " . $e->getMessage() );
         }
     }
 }

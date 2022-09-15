@@ -37,8 +37,7 @@ class ZenviaSendGeneratedNumbers implements ShouldQueue
             $jobs       = ZenviaJob::where('type', ZenviaClient::GENERATED_NUMBERS_TYPE)->where('processed', false)->get();
             $zenvia     = new ZenviaClient();
             foreach ($jobs as $job) {
-                $content    = $zenvia->sendSMS( $job->type, ZenviaHelper::getInstance()->prepareSmsDataWithArgs( $job->data ) );
-                Log::info("SMS enviado [ Números Inseridos ] - " . $content);
+                $zenvia->sendSMS( $job->type, ZenviaHelper::getInstance()->prepareSmsDataWithArgs( $job->data ) );
                 $job->processed = true;
                 $job->save();
             }
