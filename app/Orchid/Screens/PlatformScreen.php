@@ -21,7 +21,7 @@ class PlatformScreen extends Screen
      */
     public function query(): iterable
     {
-        $dbCustomers        = Customer::all();
+        $dbCustomers        = Customer::orderBy('created_at', 'desc')->get();
         $luckyNumbers       = Number::all()->count();
         $prizes             = Raffle::whereNotNull('number')->count();
         return [

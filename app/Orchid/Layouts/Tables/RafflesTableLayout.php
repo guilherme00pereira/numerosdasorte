@@ -31,23 +31,19 @@ class RafflesTableLayout extends Table
             TD::make('lottery_number', 'Número Sorteado')->sort(),
             TD::make('number', 'Número Ganhador')->render(function ($raffle){
                 $number = Number::find($raffle->number);
-                if( !is_null($number)) {
-                    return $number->refresh()->number;
-                } else {
-                    return "";
-                }
+                return is_null($number) ? "" : $number->refresh()->number;
             })->sort(),
+            TD::make('cpf', 'CPF')->render(function($raffle){
+                $customer = Customer::find($raffle->customer_id);
+                return is_null($customer) ? "" : $customer->cpf;
+            }),
             TD::make('prize', 'Prêmio'),
             TD::make('raffle_date', 'Data do Sorteio')->render(function ($raffle){
                 return e(date_format($raffle->raffle_date, 'd/m/Y H:i'));
             })->sort(),
             TD::make('customer', 'Ganhador do Prêmio' )->render(function ($raffle){
                 $winner = Customer::find($raffle->customer);
-                if(!is_null($winner)) {
-                    return e($winner->refresh()->name);
-                } else {
-                    return "";
-                }
+                return is_null($winner) ? "" : e($winner->refresh()->name);
             })->sort(),
             TD::make('id', '')->render(function ($raffle){
                 return Link::make('')

@@ -50,7 +50,7 @@ class NumbersAssigner
             $numbers = [];
             $existing = Number::select('number')->where('expiration', '>', Carbon::now())->where('category_id', $category)->get()->toArray();
             while (count($numbers) <= $this->totalNumbersToAssign) {
-                $rand       = rand(1, 99999);
+                $rand       = rand(10000, 99999);
                 if( !in_array( $rand, $existing ) ) {
                     $numbers[]  = $rand;
                     $existing[] = $rand;

@@ -3,6 +3,8 @@
 namespace App\Orchid\Screens\Admin;
 
 use App\Models\Customer;
+use App\Models\Raffle;
+use Exception;
 use Illuminate\Http\Request;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Link;
@@ -103,15 +105,28 @@ class CustomerEdit extends Screen
 
     public function saveProfile( Customer $customer, Request $request )
     {
-        $customer->fill($request->get("customer"))->save();
-        Alert::info('Perfil do cliente editado com sucesso.');
+        try {
+            $customer->fill($request->get("customer"))->save();
+            Alert::info('Perfil do cliente editado com sucesso.');
+        } catch (Exception $e) {
+            Alert::error('Erro ao salvar cliente');
+        }
         return redirect()->route('platform.customers');
     }
 
     public function removeProfile( Customer $customer )
     {
-        $customer->delete();
-        Alert::info('Perfil do cliente excluído com sucesso.');
+        try {
+            $raffle = Raffle::where('customer', $customer->id)->get();
+            if( is_null($raffle)) {
+                $customer->delete();
+                Alert::info('Perfil do cliente excluído com sucesso.');
+            } else {
+                Alert::error('Não é possível remover estes cliente, pois o mesmo já está relacionado como ganhador de um sorteio');                    
+            }
+        } catch (Exception $e) {
+            Alert::error('Erro ao remover cliente: ' . $e->getMessage());
+        }
         return redirect()->route('platform.customers');
     }
 }

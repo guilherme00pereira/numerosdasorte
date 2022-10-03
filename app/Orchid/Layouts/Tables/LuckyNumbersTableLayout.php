@@ -2,6 +2,8 @@
 
 namespace App\Orchid\Layouts\Tables;
 
+use App\Models\Customer;
+use App\Models\Order;
 use App\Services\Helper;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
@@ -27,7 +29,14 @@ class LuckyNumbersTableLayout extends Table
     {
         return [
             TD::make('number', 'Número'),
-            TD::make('order_id', 'Pedido'),
+            TD::make('order', 'Pedido')->render(function($number){
+                $order = Order::find($number->order_id);
+                return $order->order_id;
+            }),
+            TD::make('cpf', 'CPF')->render(function($number){
+                $customer = Customer::find($number->customer_id);
+                return $customer->cpf;
+            }),
             TD::make('created_at', 'Data de Emissão')->render(function ($number){
                 return e(Helper::brDate($number->created_at));
             }),
