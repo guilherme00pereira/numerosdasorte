@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\Raffle;
 use App\Models\RaffleCategory;
 use App\Services\RaffleManager;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Orchid\Screen\Action;
@@ -71,7 +72,7 @@ class RaffleEdit extends Screen
             Layout::rows([
                 Input::make('raffle.id')->type('hidden'),
                 Group::make([
-                    Input::make('setnumber')
+                    Input::make('raffle.lottery_number')
                         ->title('Número da sorte')
                         ->vertical(),
                     DateTimer::make('raffle.raffle_date')
@@ -91,6 +92,7 @@ class RaffleEdit extends Screen
                         ->title('Ganhador')
                         ->fromModel(Customer::class, 'name')
                         ->vertical()
+                        ->set("disabled", "disabled")
                 ]),
                 Group::make([
                     TextArea::make('raffle.prize')
@@ -103,15 +105,15 @@ class RaffleEdit extends Screen
         ];
     }
 
-    public function saveRaffle( Raffle $raffle, Request $request)
+    public function saveRaffle( Raffle $raffle, Request $request): RedirectResponse
     {
         try {
         $raffleWinner           = null;
         $raffleNumber           = null;
         $preRaffle              = $request['raffle'];
 
-        if( $request["setnumber"] ) {
-            $raffleManager      = new RaffleManager( $raffle['id'], $request["setnumber"], $preRaffle['category']);
+        if( $preRaffle["lottery_number"] ) {
+            $raffleManager      = new RaffleManager( $raffle['id'], $preRaffle["lottery_number"], $preRaffle['category']);
             $raffleNumber       = $raffleManager->chooseNumber();
             $raffleWinner       = $raffleManager->getWinnerId();
         }
@@ -119,7 +121,7 @@ class RaffleEdit extends Screen
         $raffle->raffle_date        = $preRaffle['raffle_date'];
         $raffle->prize              = $preRaffle['prize'];
         $raffle->category           = $preRaffle['category'];
-        $raffle->lottery_number     = $request["setnumber"];
+        $raffle->lottery_number     = $preRaffle["lottery_number"];
         $raffle->number             = $raffleNumber;
         $raffle->customer           = $raffleWinner;
         $raffle->save();
@@ -127,6 +129,18 @@ class RaffleEdit extends Screen
         } catch (\Exception $e) {
             Alert::error('Erro ao salvar dados do sorteio');
             Log::error("Erro ao salvar dados do sorteio: " . $e->getMessage());
+        }
+        return redirect()->route('platform.raffles');
+    }
+
+    public function removeRaffle( Raffle $raffle, Request $request ): RedirectResponse
+    {
+        try {
+            $raffle->delete();
+            Alert::info('Sorteio excluído com sucesso.');
+        }catch (\Exception $e) {
+            Alert::error('Erro ao excluir sorteio');
+            Log::error("Erro ao excluir sorteio: " . $e->getMessage());
         }
         return redirect()->route('platform.raffles');
     }

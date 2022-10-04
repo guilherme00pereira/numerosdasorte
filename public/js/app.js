@@ -2178,7 +2178,7 @@ document.addEventListener("turbo:load", function (event) {
       var loadingElem = document.getElementById('processingImportLoading');
       loadingElem.classList.add('d-flex');
       loadingElem.style.display = "block";
-      fetch('https://' + window.location.host + '/asyncGetImportStatus').then(function (resp) {
+      fetch('http://' + window.location.host + '/asyncGetImportStatus').then(function (resp) {
         return resp.json();
       }).then(function (data) {
         if (data.complete) {

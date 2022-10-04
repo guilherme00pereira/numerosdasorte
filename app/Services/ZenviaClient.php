@@ -39,12 +39,12 @@ class ZenviaClient
             try {
                 Artisan::call('cache:clear');
                 $data = $this->formatSmsData($type, $item);
-                Log::info($data);
+                Log::channel("sms")->info($data);
                 $response = $this->client->request('POST', $url, [ 'body' => $data ]);
-                Log::info("SMS enviado [ Nova Conta ] - " . $response->getBody()->getContents());
-                Log::info("SMS enviado [ Nova Conta ] - " . $item->phone);
+                Log::channel("sms")->info("SMS enviado [ " . $this->getLogActionByType( $type ) . " ] - " . $response->getBody()->getContents());
+                Log::channel("sms")->info("SMS enviado [ " . $this->getLogActionByType( $type ) . " ] - " . $item->phone);
             } catch (Exception $e) {
-                Log::error("Erro ao enviar SMS [ Nova Conta ] - " . $item->phone . " - message: " . $e->getMessage());
+                Log::channel("sms")->error("Erro ao enviar SMS [ " . $this->getLogActionByType( $type ) . " ] - " . $item->phone . " - message: " . $e->getMessage());
             }
         }
     }
@@ -66,16 +66,33 @@ class ZenviaClient
     private function getTextByType( $type, $arg ): string
     {
         if ($type == self::NEW_ACCOUNT_TYPE) {
-            return "Olá, sua conta foi criada no BR Vita Prêmios! Você irá concorrer a muitos prêmios com seus números da sorte ao comprar na loja. Acesse: brvitapremios.com.br";
+            return "Ola, sua conta foi criada no BR Vita Premios! Você ira concorrer a muitos premios com seus numeros da sorte ao comprar na loja. Acesse: brvitapremios.com.br";
         }
         if ($type == self::GENERATED_NUMBERS_TYPE) {
-            return "Olá, " . $arg . " números da sorte foram inseridos na sua conta no BR Vita Prêmios! Agora é só torcer muito e acompanhar todos os sorteios. Acesse: brvitapremios.com.br";
+            return "Ola, " . $arg . " numeros da sorte foram inseridos na sua conta no BR Vita Premios! Agora e so torcer muito e acompanhar todos os sorteios. Acesse: brvitapremios.com.br";
         }
         if ($type == self::DRAWN_NUMBER_TYPE) {
-            return "Parabéns, seu número da sorte foi contemplado no BR Vita Prêmios! Entre no  site e confira seu número sorteado e seu prêmio!. Acesse: brvitapremios.com.br";
+            return "Parabens, seu numero da sorte foi contemplado no BR Vita Premios! Entre no  site e confira seu numero sorteado e seu premio!. Acesse: brvitapremios.com.br";
         }
         if ($type == self::DRAWN_DEFAULTER_TYPE) {
-            return "Que pena!, seu número da sorte foi contemplado, mas você está inadimplente, conforme o regulamento não poderá receber o prêmio. Acesse: brvitapremios.com.br";
+            return "Que pena!, seu numero da sorte foi contemplado, mas você esta inadimplente, conforme o regulamento nao podera receber o premio. Acesse: brvitapremios.com.br";
+        }
+        return "";
+    }
+
+    private function getLogActionByType( $type ): string
+    {
+        if ($type == self::NEW_ACCOUNT_TYPE) {
+            return "Nova Conta";
+        }
+        if ($type == self::GENERATED_NUMBERS_TYPE) {
+            return "Número Gerado";
+        }
+        if ($type == self::DRAWN_NUMBER_TYPE) {
+            return "Número Sorteado";
+        }
+        if ($type == self::DRAWN_DEFAULTER_TYPE) {
+            return "Número Sorteado Inadimplente";
         }
         return "";
     }

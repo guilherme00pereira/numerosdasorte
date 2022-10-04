@@ -118,11 +118,11 @@ class CustomerEdit extends Screen
     {
         try {
             $raffle = Raffle::where('customer', $customer->id)->get();
-            if( is_null($raffle)) {
+            if( count($raffle) === 0 ) {
                 $customer->delete();
                 Alert::info('Perfil do cliente excluído com sucesso.');
             } else {
-                Alert::error('Não é possível remover estes cliente, pois o mesmo já está relacionado como ganhador de um sorteio');                    
+                Alert::error('Não é possível remover estes cliente, pois o mesmo já está relacionado como ganhador de um sorteio');
             }
         } catch (Exception $e) {
             Alert::error('Erro ao remover cliente: ' . $e->getMessage());

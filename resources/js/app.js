@@ -13,7 +13,7 @@ document.addEventListener("turbo:load", (event) => {
             const loadingElem = document.getElementById('processingImportLoading');
             loadingElem.classList.add('d-flex');
             loadingElem.style.display = "block";
-            fetch('https://' + window.location.host + '/asyncGetImportStatus')
+            fetch('http://' + window.location.host + '/asyncGetImportStatus')
                 .then((resp => resp.json()))
                 .then((data) => {
                     if (data.complete) {
