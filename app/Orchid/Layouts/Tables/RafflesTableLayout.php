@@ -34,7 +34,7 @@ class RafflesTableLayout extends Table
                 return is_null($number) ? "" : $number->refresh()->number;
             })->sort(),
             TD::make('cpf', 'CPF')->render(function($raffle){
-                $customer = Customer::find($raffle->customer_id);
+                $customer = Customer::find($raffle->customer);
                 return is_null($customer) ? "" : $customer->cpf;
             }),
             TD::make('prize', 'Prêmio'),

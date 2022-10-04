@@ -27,7 +27,7 @@ class Helper
         return true;
     }
 
-    public static function brDate( $date )
+    public static function brDate( $date ): bool|string
     {
         if( gettype( $date ) === "string" ) {
             $date = strtotime($date);
@@ -53,7 +53,7 @@ class Helper
         return $closest;
     }
 
-    public static function formatPhoneInternational( $number )
+    public static function formatPhoneInternational( $number ): string
     {
         return "55" . preg_replace('/[^0-9]/', "", $number);
     }
