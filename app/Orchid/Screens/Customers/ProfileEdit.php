@@ -3,14 +3,13 @@
 namespace App\Orchid\Screens\Customers;
 
 use App\Models\Customer;
+use App\Models\Number;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\DateTimer;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Screen;
-use Orchid\Support\Color;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
 
@@ -25,8 +24,10 @@ class ProfileEdit extends Screen
     {
         $user           = Auth::user();
         $profile        = Customer::where('user', $user->id)->first();
+        $numbers        = Number::where('customer_id', $profile->id)->get();
         return [
-            'user' => $profile
+            'user'      => $profile,
+            'numbers'   => $numbers->count()
         ];
     }
 
@@ -69,13 +70,18 @@ class ProfileEdit extends Screen
                         ->vertical()
                 ]),
                 Group::make([
+                    Input::make('user.id')
+                        ->title('ID')
+                        ->vertical()
+                        ->readonly(),
                     DateTimer::make('user.birthdate')
                         ->title('Data de Nascimento')
-                        ->format('d/m/Y')
+                        ->format("d/m/Y")
                         ->vertical(),
-                    Input::make('user.name')
+                    Input::make('numbers')
                         ->title('Quantidade de Números da Sorte')
                         ->vertical()
+                        ->readonly()
                 ]),
                 Group::make([
                     Input::make('user.phone')
@@ -100,7 +106,6 @@ class ProfileEdit extends Screen
 
     public function saveProfile( Request $request )
     {
-        //var_dump($this->user);die;
         try {
             $user = $request['user'];
             $profile = Customer::find($user['id']);

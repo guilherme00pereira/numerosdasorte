@@ -40,12 +40,12 @@ class ProcessImportCustomers implements ShouldQueue
     public function handle(): void
     {
         try {
-            Log::channel("import")->info("Iniciando importação dos clientes". PHP_EOL);
+            Log::channel("import")->info("Iniciando importação dos clientes");
             $importer = new Importer($this->file);
             $importer->importCustomers();
             Log::info("Importação dos clientes processada.");
         } catch (\Exception $e) {
-            Log::channel("import")->info( "Erro ao importar clientes: " . $e->getMessage() . PHP_EOL);
+            Log::channel("import")->info( "Erro ao importar clientes: " . $e->getMessage());
             Log::error($e->getMessage());
         }
     }

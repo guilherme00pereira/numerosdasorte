@@ -3,19 +3,18 @@
 namespace App\Orchid\Screens\Admin;
 
 use App\Models\Customer;
-use App\Models\Raffle;
 use Exception;
 use Illuminate\Http\Request;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Group;
+use Orchid\Screen\Fields\DateTimer;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Screen;
 use Orchid\Support\Color;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
-use phpDocumentor\Reflection\PseudoTypes\Numeric_;
 
 class CustomerEdit extends Screen
 {
@@ -72,11 +71,15 @@ class CustomerEdit extends Screen
                         ->vertical(),
                     Input::make('customer.cpf')
                         ->title('CPF')
-                        ->vertical()
+                        ->vertical(),
                 ]),
                 Group::make([
-                    Input::make('customer.birthdate')
+                    Input::make('customer.id')
+                        ->title('ID')
+                        ->vertical(),
+                        DateTimer::make('customer.birthdate')
                         ->title('Data de Nascimento')
+                        ->format("d/m/Y")
                         ->vertical(),
                     Input::make('numbers')
                         ->title('Quantidade de Números da Sorte')
@@ -97,6 +100,7 @@ class CustomerEdit extends Screen
                         ->vertical(),
                     Input::make('customer.updated_at')
                         ->title('Última atualização')
+                        ->format('d/m/Y')
                         ->vertical()
                 ]),
             ])
@@ -117,13 +121,8 @@ class CustomerEdit extends Screen
     public function removeProfile( Customer $customer )
     {
         try {
-            $raffle = Raffle::where('customer', $customer->id)->get();
-            if( count($raffle) === 0 ) {
-                $customer->delete();
-                Alert::info('Perfil do cliente excluído com sucesso.');
-            } else {
-                Alert::error('Não é possível remover estes cliente, pois o mesmo já está relacionado como ganhador de um sorteio');
-            }
+            $customer->delete();
+            Alert::info('Perfil do cliente excluído com sucesso.');
         } catch (Exception $e) {
             Alert::error('Erro ao remover cliente: ' . $e->getMessage());
         }

@@ -111,11 +111,14 @@ class RaffleEdit extends Screen
         $raffleWinner           = null;
         $raffleNumber           = null;
         $preRaffle              = $request['raffle'];
-
-        if( $preRaffle["lottery_number"] ) {
-            $raffleManager      = new RaffleManager( $raffle['id'], $preRaffle["lottery_number"], $preRaffle['category']);
-            $raffleNumber       = $raffleManager->chooseNumber();
-            $raffleWinner       = $raffleManager->getWinnerId();
+        
+        if( $preRaffle["lottery_number"] ) 
+        {
+            if( is_null($raffle->customer) && is_null($raffle->number)) {
+                $raffleManager      = new RaffleManager( $raffle['id'], $preRaffle["lottery_number"], $preRaffle['category']);
+                $raffleNumber       = $raffleManager->chooseNumber();
+                $raffleWinner       = $raffleManager->getWinnerId();
+            }
         }
 
         $raffle->raffle_date        = $preRaffle['raffle_date'];

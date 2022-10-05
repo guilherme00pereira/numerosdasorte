@@ -3,6 +3,7 @@
 namespace App\Orchid\Layouts\Tables;
 
 use App\Services\Helper;
+use App\Models\Order;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
@@ -28,7 +29,10 @@ class MyLuckyNumbersTableLayout extends Table
     {
         return [
             TD::make('number', 'Número'),
-            TD::make('order_id', 'Pedido'),
+            TD::make('order', 'Pedido')->render(function($number){
+                $order = Order::find($number->order_id);
+                return $order->order_id;
+            }),
             TD::make('created_at', 'Data de Emissão')->render(function ($number){
                 return Helper::brDate($number->created_at);
             }),

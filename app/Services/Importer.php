@@ -34,9 +34,9 @@ class Importer
             $role = Role::where('slug', 'cliente')->first();
             foreach ($importedCustomers as $key => $customer) {
                 Log::channel("import")->info( "importando " . (intval($key) + 1) . " de " . $total . " clientes" );
-                $existingCustomer = Customer::where('external_code', $customer->id_cliente)->first();
+                $existingCustomer = Customer::where('external_code', $customer->id_cliente)->where('cpf', $customer->cpf)->first();
+                $checkedMail = $this->checkEmail($customer->email, $customer->id_cliente);
                 if (is_null($existingCustomer)) {
-                    $checkedMail = $this->checkEmail($customer->email, $customer->id_cliente);
                     $user = User::where('email', $checkedMail)->first();
                     if (is_null($user)) {
                         $user = User::create([
@@ -47,7 +47,6 @@ class Importer
                         ]);
                         $user->addRole($role);
                     }
-
                     $customersPhones[] = Helper::formatPhoneInternational( $customer->telefone );
                     Customer::create([
                         'external_code' => $customer->id_cliente,
@@ -61,22 +60,23 @@ class Importer
                         'state' => $customer->estado,
                         'defaulter' => strtolower($customer->status) === 'inadimplente'
                     ]);
-
+                    Log::channel("import")->info( "Cliente " . $customer->id_cliente . " adicionado" );
                 } else {
-                    $existingCustomer->cpf = $customer->cpf;
-                    $existingCustomer->name = $customer->nome;
-                    $existingCustomer->birthdate = $this->formatDate($customer->data_nascimento);
-                    $existingCustomer->phone = $customer->telefone;
-                    $existingCustomer->city = $customer->cidade;
-                    $existingCustomer->state = $customer->estado;
-                    $existingCustomer->defaulter = strtolower($customer->status) === 'inadimplente';
+                    $existingCustomer->cpf          = $customer->cpf;
+                    $existingCustomer->name         = $customer->nome;
+                    $existingCustomer->birthdate    = $this->formatDate($customer->data_nascimento);
+                    $existingCustomer->phone        = $customer->telefone;
+                    $existingCustomer->city         = $customer->cidade;
+                    $existingCustomer->state        = $customer->estado;
+                    $existingCustomer->defaulter    = strtolower($customer->status) === 'inadimplente';
                     $existingCustomer->save();
+                    Log::channel("import")->info( "Cliente " . $customer->id_cliente . " atualizado" );
                 }
             }
             if( count( $customersPhones ) > 0 ) {
-                ZenviaHelper::getInstance()->jobToEnqueue( ZenviaClient::NEW_ACCOUNT_TYPE, $customersPhones );
+                //ZenviaHelper::getInstance()->jobToEnqueue( ZenviaClient::NEW_ACCOUNT_TYPE, $customersPhones );
             }
-            Log::channel("import")->info( "Importação dos clientes processada." );
+            Log::channel("import")->info( "Importação dos clientes processada.". PHP_EOL );
             Log::info("Importação dos clientes processada.");
         } catch (\Exception $e) {
             Log::channel("import")->info( "ocorreu um erro ao importar os clientes: " . $e->getMessage() );
