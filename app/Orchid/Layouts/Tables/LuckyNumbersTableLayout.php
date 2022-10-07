@@ -35,7 +35,7 @@ class LuckyNumbersTableLayout extends Table
             }),
             TD::make('cpf', 'CPF')->render(function($number){
                 $customer = Customer::find($number->customer_id);
-                return $customer->cpf;
+                return is_null($customer) ? "" : $customer->cpf;
             }),
             TD::make('created_at', 'Data de Emissão')->render(function ($number){
                 return e(Helper::brDate($number->created_at));

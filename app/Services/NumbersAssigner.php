@@ -32,7 +32,7 @@ class NumbersAssigner
 
     public function process()
     {
-        if( in_array( $this->orderData->payment_type, $this->onCreditMethods ) && intval($this->orderData->installments) > 1) {
+        if( intval($this->orderData->installments) > 1) {
             $this->months += intval($this->orderData->installments);
         } else {
             $this->months += intval($this->orderData->num_items);

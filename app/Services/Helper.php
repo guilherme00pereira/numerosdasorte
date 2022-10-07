@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Services;
-
+use IntlDateFormatter;
 
 class Helper
 {
@@ -34,9 +34,12 @@ class Helper
         } else {
             $date = $date->timestamp;
         }
-        setlocale(LC_ALL, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
-        date_default_timezone_set('America/Sao_Paulo');
-        return strftime('%B de %Y', $date);
+        $fmt = new IntlDateFormatter('pt_BR',
+            IntlDateFormatter::FULL, 
+            IntlDateFormatter::FULL
+        );
+        $fmt->setPattern("LLLL 'de' yyyy");
+        return $fmt->format($date);
     }
 
     public static function getClosest($arr, $target)
