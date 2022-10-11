@@ -35,7 +35,7 @@ class RafflesTableLayout extends Table
             })->sort(),
             TD::make('cpf', 'CPF')->render(function($raffle){
                 $customer = Customer::find($raffle->customer);
-                return is_null($customer) ? "" : $customer->cpf;
+                return is_null($customer) ? "" : $customer->refresh()->cpf;
             }),
             TD::make('prize', 'Prêmio'),
             TD::make('raffle_date', 'Data do Sorteio')->render(function ($raffle){

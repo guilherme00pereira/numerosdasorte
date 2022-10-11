@@ -74,7 +74,7 @@ class Importer
                 }
             }
             if( count( $customersPhones ) > 0 ) {
-                //ZenviaHelper::getInstance()->jobToEnqueue( ZenviaClient::NEW_ACCOUNT_TYPE, $customersPhones );
+                ZenviaHelper::getInstance()->jobToEnqueue( ZenviaClient::NEW_ACCOUNT_TYPE, $customersPhones );
             }
             Log::channel("import")->info( "Importação dos clientes processada.". PHP_EOL );
             Log::info("Importação dos clientes processada.");

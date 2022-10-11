@@ -44,9 +44,19 @@ class RaffleManager
         return $this->chosenNumber->id;
     }
 
+    public function allDefaulters()
+    {
+        $customersIds   = Number::select('customer_id')->whereNotNull('customer_id')->get();
+        $customers      = Customer::whereIn('id', $customersIds)->where('defaulter', false)->get();
+        return count($customers) > 0 ? false: true;
+    }
+
     public function getWinnerId()
     {
-        return $this->chosenNumber->customer_id;
+        if( !is_null($this->chosenNumber) ) {
+            return $this->chosenNumber->customer_id;
+        }
+        return null;
     }
 
     private function checkWinnerIsNoDefaulter()

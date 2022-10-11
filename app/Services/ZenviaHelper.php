@@ -4,8 +4,6 @@ namespace App\Services;
 
 use App\Jobs\ZenviaSendNewAccount;
 use App\Models\ZenviaJob;
-use App\Services\Helper;
-use App\Services\ZenviaClient;
 
 class ZenviaHelper {
 

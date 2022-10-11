@@ -14,11 +14,9 @@ class NumbersAssigner
     protected Order $orderData;
     private array $categories;
     private int $months;
-    private array $onCreditMethods;
 
     public function __construct( $order )
     {
-        $this->onCreditMethods      = ['BOLETO BANCARIO', 'CARTAO CREDITO'];
         $this->orderData            = $order;
         $this->totalNumbersToAssign = 1;
         $this->months               = 1;

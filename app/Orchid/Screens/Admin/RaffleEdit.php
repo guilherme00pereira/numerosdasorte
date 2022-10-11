@@ -116,8 +116,12 @@ class RaffleEdit extends Screen
         {
             if( is_null($raffle->customer) && is_null($raffle->number)) {
                 $raffleManager      = new RaffleManager( $raffle['id'], $preRaffle["lottery_number"], $preRaffle['category']);
-                $raffleNumber       = $raffleManager->chooseNumber();
-                $raffleWinner       = $raffleManager->getWinnerId();
+                if( $raffleManager->allDefaulters() ) {
+                    Alert::warning('Não foi possível sortear um ganhador pois todos os números são de inadimplentes.');
+                } else {
+                    $raffleNumber       = $raffleManager->chooseNumber();
+                    $raffleWinner       = $raffleManager->getWinnerId();
+                }
             }
         }
 

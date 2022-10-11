@@ -66,7 +66,7 @@ class ZenviaClient
     private function getTextByType( $type, $arg ): string
     {
         if ($type == self::NEW_ACCOUNT_TYPE) {
-            return "Ola, sua conta foi criada no BR Vita Premios! Você ira concorrer a muitos premios com seus numeros da sorte ao comprar na loja. Acesse: brvitapremios.com.br";
+            return "Ola, sua conta foi criada";
         }
         if ($type == self::GENERATED_NUMBERS_TYPE) {
             return "Ola, " . $arg . " numeros da sorte foram inseridos na sua conta no BR Vita Premios! Agora e so torcer muito e acompanhar todos os sorteios. Acesse: brvitapremios.com.br";
