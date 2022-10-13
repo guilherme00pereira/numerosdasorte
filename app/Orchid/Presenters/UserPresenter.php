@@ -90,13 +90,13 @@ class UserPresenter extends Presenter implements Searchable, Personable
         return true;
     }
 
-    public function defaulterStatus(): null|bool
+    public function defaulterStatus(): null|string
     {
         $customer = Customer::where('user', $this->entity->id)->first();
         if( is_null( $customer ) ) {
             return null;
         } else {
-            return $customer->defaulter === 1;
+            return $customer->defaulter;
         }
 
     }

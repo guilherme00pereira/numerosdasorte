@@ -32,8 +32,10 @@ class RaffleEdit extends Screen
      */
     public function query(Raffle $raffle): iterable
     {
+        $customer = Customer::find($raffle->customer);
         return [
-            'raffle'    => $raffle
+            'raffle'    => $raffle,
+            'winner'    => is_null($customer) ? null : $customer->name
         ];
     }
 
@@ -87,12 +89,10 @@ class RaffleEdit extends Screen
                         ->title('Categoria')
                         ->fromModel(RaffleCategory::class, 'name')
                         ->vertical(),
-                    Select::make('raffle.customer')
-                        ->empty('', 0)
+                    Input::make('winner')
                         ->title('Ganhador')
-                        ->fromModel(Customer::class, 'name')
                         ->vertical()
-                        ->set("disabled", "disabled")
+                        ->set("readonly", "readonly")
                 ]),
                 Group::make([
                     TextArea::make('raffle.prize')
@@ -111,10 +111,10 @@ class RaffleEdit extends Screen
         $raffleWinner           = null;
         $raffleNumber           = null;
         $preRaffle              = $request['raffle'];
-        
-        if( $preRaffle["lottery_number"] ) 
+
+        if( $preRaffle["lottery_number"] )
         {
-            if( is_null($raffle->customer) && is_null($raffle->number)) {
+            if( is_null($request['winner']) && is_null($raffle->number)) {
                 $raffleManager      = new RaffleManager( $raffle['id'], $preRaffle["lottery_number"], $preRaffle['category']);
                 if( $raffleManager->allDefaulters() ) {
                     Alert::warning('Não foi possível sortear um ganhador pois todos os números são de inadimplentes.');
